@@ -5,12 +5,8 @@
 </ion-header>
 
 <ion-content padding>
-  <p>latitude: {{latitude}}</p>
-  <p>longitude: {{longitude}}</p>
-  <div showWhen="mobileweb">
-    I am visible on www browser!
-  </div>
-  <div showWhen="mobile">
-    I am visible on mobile!
-  </div>
+  <p>{{deviceCoords | json}}</p>
+  <button ion-button (click)="getLocation()">get device coords</button>
+  <p>{{deviceInfo | json}}</p>
+  <button ion-button (click)="getInfo()">get device info</button>
 </ion-content>

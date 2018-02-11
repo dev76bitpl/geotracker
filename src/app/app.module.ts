@@ -1,6 +1,7 @@
 import { NgModule, ErrorHandler } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
-import { IonicApp, IonicModule, IonicErrorHandler, Platform } from 'ionic-angular';
+import { IonicApp, IonicModule, IonicErrorHandler } from 'ionic-angular';
+import { Platform } from 'ionic-angular';
 import { MyApp } from './app.component';
 
 import { AboutPage } from '../pages/about/about';
@@ -12,7 +13,7 @@ import { StatusBar } from '@ionic-native/status-bar';
 import { SplashScreen } from '@ionic-native/splash-screen';
 import { Geolocation } from '@ionic-native/geolocation';
 import { BackgroundGeolocation, BackgroundGeolocationConfig, BackgroundGeolocationResponse } from '@ionic-native/background-geolocation';
-
+import { Device } from '@ionic-native/device';
 
 @NgModule({
   declarations: [
@@ -39,6 +40,7 @@ import { BackgroundGeolocation, BackgroundGeolocationConfig, BackgroundGeolocati
     SplashScreen,
     Geolocation,
     BackgroundGeolocation,
+    Device,
     { provide: ErrorHandler, useClass: IonicErrorHandler }
   ]
 })
