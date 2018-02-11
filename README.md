@@ -3,9 +3,6 @@
 Job tracking geolocation app.
 =============================================
 
-![MainUI](/appui.png)
-![Settings](/settings.png)
-
 ## Description
 
 
