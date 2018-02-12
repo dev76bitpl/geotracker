@@ -1,7 +1,6 @@
 import { NgModule, ErrorHandler } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { IonicApp, IonicModule, IonicErrorHandler } from 'ionic-angular';
-import { Platform } from 'ionic-angular';
 import { MyApp } from './app.component';
 
 import { AboutPage } from '../pages/about/about';
@@ -11,9 +10,9 @@ import { TabsPage } from '../pages/tabs/tabs';
 
 import { StatusBar } from '@ionic-native/status-bar';
 import { SplashScreen } from '@ionic-native/splash-screen';
+import { LocationTrackerProvider } from '../providers/location-tracker/location-tracker';
+import { BackgroundGeolocation } from '@ionic-native/background-geolocation';
 import { Geolocation } from '@ionic-native/geolocation';
-import { BackgroundGeolocation, BackgroundGeolocationConfig, BackgroundGeolocationResponse } from '@ionic-native/background-geolocation';
-import { Device } from '@ionic-native/device';
 
 @NgModule({
   declarations: [
@@ -36,12 +35,13 @@ import { Device } from '@ionic-native/device';
     TabsPage
   ],
   providers: [
+    LocationTrackerProvider,
+    BackgroundGeolocation,
+    Geolocation,
     StatusBar,
     SplashScreen,
-    Geolocation,
-    BackgroundGeolocation,
-    Device,
-    { provide: ErrorHandler, useClass: IonicErrorHandler }
+    { provide: ErrorHandler, useClass: IonicErrorHandler },
+    LocationTrackerProvider
   ]
 })
 export class AppModule { }
