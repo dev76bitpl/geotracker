@@ -30,6 +30,7 @@ export class LocationTrackerProvider {
       interval: 2000
     };
 
+    //this.backgroundGeolocation.switchMode(BackgroundGeolocation.BACKGROUND_MODE);
     this.backgroundGeolocation.configure(config).subscribe((location) => {
 
       console.log('BackgroundGeolocation:  ' + location.latitude + ',' + location.longitude);
