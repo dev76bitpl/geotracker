@@ -1,12 +1,14 @@
 <ion-header>
-  <ion-navbar color="secondary">
-    <ion-title>
-      Location Tracker
-    </ion-title>
+  <ion-navbar>
+    <ion-title>Home</ion-title>
   </ion-navbar>
 </ion-header>
 
-<ion-content>
+<ion-content padding>
+  <p>{{deviceCoords | json}}</p>
+  <button ion-button (click)="getLocationFore()">get device coords</button>
+  <p>{{deviceInfo | json}}</p>
+  <button ion-button (click)="getInfo()">get device info</button>
   <h3>Current Latitude: {{locationTracker.lat}}</h3>
   <h3>Current Longitude: {{locationTracker.lng}}</h3>
   <button ion-button full primary (click)="start()">Start Tracking</button>
