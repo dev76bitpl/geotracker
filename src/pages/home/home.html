@@ -5,12 +5,15 @@
 </ion-header>
 
 <ion-content padding>
-  <p>{{deviceCoords | json}}</p>
-  <button ion-button (click)="getLocationFore()">get device coords</button>
   <p>{{deviceInfo | json}}</p>
-  <button ion-button (click)="getInfo()">get device info</button>
-  <h3>Current Latitude: {{locationTracker.lat}}</h3>
-  <h3>Current Longitude: {{locationTracker.lng}}</h3>
-  <button ion-button full primary (click)="start()">Start Tracking</button>
-  <button ion-button full primary (click)="stop()">Stop Tracking</button>
+  <button ion-button full success (click)="getInfo()">get device info</button>
+  <button ion-button (click)="start() ">Start Tracking</button>
+  <button ion-button (click)="stop() ">Stop Tracking</button>
+  <div *ngIf="locationTracker.buttonClicked">
+    <h4>Current Latitude: {{locationTracker.lat}}</h4>
+    <h4>Current Longitude: {{locationTracker.lng}}</h4>
+    <h4>
+      <a href="{{locationTracker.googleMapsUrl}}{{locationTracker.lat}},{{locationTracker.lng}}">check this coordinate on google maps</a>
+    </h4>
+  </div>
 </ion-content>

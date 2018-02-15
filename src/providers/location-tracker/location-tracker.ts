@@ -11,16 +11,19 @@ import 'rxjs/add/operator/filter';
 @Injectable()
 export class LocationTrackerProvider {
   public watch: any;
-  public watchGPS: any;
   public lat: number = 0;
   public lng: number = 0;
+  public googleMapsUrl: string;
+  public buttonClicked: boolean = false;
+
   constructor(public zone: NgZone, public geolocation: Geolocation) {
     console.log('Hello LocationTrackerProvider Provider');
+    this.googleMapsUrl = "https://www.google.com/maps/search/?api=1&query=";
   }
 
   startTracking() {
     // Foreground Tracking
-
+    this.buttonClicked = !this.buttonClicked;
     let options = {
       frequency: 3000,
       enableHighAccuracy: true
@@ -40,8 +43,11 @@ export class LocationTrackerProvider {
   }
 
   stopTracking() {
-    console.log("stop tracking...")
+    console.log("stop tracking...");
+    this.buttonClicked = !this.buttonClicked;
     this.watch.unsubscribe();
+    this.lat = 0;
+    this.lng = 0;
   }
 
 }

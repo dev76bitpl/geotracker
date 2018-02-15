@@ -42,12 +42,11 @@ export class HomePage {
   public deviceCoords: coordsInterface = {};
 
   constructor(public navCtrl: NavController, private geolocation: Geolocation, public platform: Platform, private device: Device, private backgroundMode: BackgroundMode, public locationTracker: LocationTrackerProvider) {
-    this.backgroundMode.enable();
-    //this.getLocationFore();
-    //this.getLocation();
   }
 
   start() {
+    this.backgroundMode.enable();
+    console.log(this.backgroundMode.isActive());
     this.locationTracker.startTracking();
   }
   stop() {
@@ -57,35 +56,35 @@ export class HomePage {
 
 
 
-  public getLocationFore() {
-    this.geolocation.getCurrentPosition().then((resp) => {
-
-      /*this.deviceCoords.accuracy = location.coords.accuracy;
-      this.deviceCoords.altitude = location.coords.altitude;
-      this.deviceCoords.altitudeAccuracy = location.coords.altitudeAccuracy;
-      this.deviceCoords.heading = location.coords.heading;
-      this.deviceCoords.latitude = location.coords.latitude;
-      this.deviceCoords.longitude = location.coords.longitude;
-      this.deviceCoords.speed = location.coords.speed;
-      this.deviceCoords.time = location.time;
-      this.deviceCoords.timestamp = location.timestamp;*/
-
-      this.deviceCoords.latitude = resp.coords.latitude;
-      this.deviceCoords.longitude = resp.coords.longitude;
-
-      resp.coords.latitude;
-      resp.coords.longitude;
-      console.log("lat: " + resp.coords.latitude + " | long: " + resp.coords.longitude);
-    }).catch((error) => {
-      console.log('Error getting location', error);
-    });
-    let watch = this.geolocation.watchPosition();
-    watch.subscribe((data) => {
-      console.log(data);
-      //this.latitude = data.coords.latitude;
-      //this.longitude = data.coords.longitude;
-    });
-  }
+  //   public getLocationFore() {
+  //     this.geolocation.getCurrentPosition().then((resp) => {
+  // 
+  //       /*this.deviceCoords.accuracy = location.coords.accuracy;
+  //       this.deviceCoords.altitude = location.coords.altitude;
+  //       this.deviceCoords.altitudeAccuracy = location.coords.altitudeAccuracy;
+  //       this.deviceCoords.heading = location.coords.heading;
+  //       this.deviceCoords.latitude = location.coords.latitude;
+  //       this.deviceCoords.longitude = location.coords.longitude;
+  //       this.deviceCoords.speed = location.coords.speed;
+  //       this.deviceCoords.time = location.time;
+  //       this.deviceCoords.timestamp = location.timestamp;*/
+  // 
+  //       this.deviceCoords.latitude = resp.coords.latitude;
+  //       this.deviceCoords.longitude = resp.coords.longitude;
+  // 
+  //       resp.coords.latitude;
+  //       resp.coords.longitude;
+  //       console.log("lat: " + resp.coords.latitude + " | long: " + resp.coords.longitude);
+  //     }).catch((error) => {
+  //       console.log('Error getting location', error);
+  //     });
+  //     let watch = this.geolocation.watchPosition();
+  //     watch.subscribe((data) => {
+  //       console.log(data);
+  //       //this.latitude = data.coords.latitude;
+  //       //this.longitude = data.coords.longitude;
+  //     });
+  //   }
 
   public getInfo() {
     //const device = this.platform;
