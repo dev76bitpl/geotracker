@@ -20,6 +20,29 @@ export class LocationTrackerProvider {
   constructor(public zone: NgZone, public geolocation: Geolocation) {
     console.log('Hello LocationTrackerProvider Provider');
     this.googleMapsUrl = "https://www.google.com/maps/search/?api=1&query=";
+    //this.onLoadTracking();
+  }
+
+  onLoadTracking() {
+    // Foreground Tracking
+    this.buttonClicked = !this.buttonClicked;
+    let options = {
+      frequency: 3000,
+      enableHighAccuracy: true
+    };
+
+    this.watch = this.geolocation.watchPosition(options).filter((p: any) => p.code === undefined).subscribe((position: Geoposition) => {
+
+      console.log(position);
+
+      // Run update inside of Angular's zone
+      this.zone.run(() => {
+        this.lat = position.coords.latitude;
+        this.lng = position.coords.longitude;
+        this.position = position;
+      });
+
+    });
   }
 
   startTracking() {
@@ -60,6 +83,8 @@ export class LocationTrackerProvider {
       this.lat = resp.coords.latitude;
       this.lng = resp.coords.longitude;
       console.log(resp);
+      console.log("location-tracker lat: " + resp.coords.latitude);
+      console.log("location-tracker lng: " + resp.coords.longitude);
     }).catch((error) => {
       console.log('Error getting location', error);
     });

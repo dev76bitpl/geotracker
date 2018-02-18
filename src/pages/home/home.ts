@@ -4,6 +4,7 @@ import { Device } from '@ionic-native/device';
 import { BackgroundMode } from '@ionic-native/background-mode';
 import { LocationTrackerProvider } from '../../providers/location-tracker/location-tracker';
 import { AlertController } from 'ionic-angular';
+import { Storage } from '@ionic/storage';
 import { SQLite, SQLiteObject } from '@ionic-native/sqlite';
 
 interface coordsInterface {
@@ -35,27 +36,38 @@ interface deviceInterface {
   templateUrl: 'home.html'
 })
 export class HomePage {
-  public latitude: any;
-  public longitude: any;
   public deviceInfo: deviceInterface = {};
   public deviceCoords: coordsInterface = {};
-  public intervalTime: number = 20000;
+  public jsonArray = {};
+  public intervalTime: number = 15000;
+  public unixTime: any;
+  public jobStatus = {
+    break: "break",
+    work: "work",
+    end: "end",
+  };
+  setInterval: number;
 
-  constructor(public navCtrl: NavController, private device: Device, private backgroundMode: BackgroundMode, public locationTracker: LocationTrackerProvider, public alertCtrl: AlertController, private sqlite: SQLite) {
+  constructor(public navCtrl: NavController, private device: Device, private backgroundMode: BackgroundMode, public locationTracker: LocationTrackerProvider, public alertCtrl: AlertController, private storage: Storage, private sqlite: SQLite) {
+
     this.backgroundMode.enable();
     console.log(this.backgroundMode.isActive());
     console.log(this.backgroundMode.isEnabled());
-    setInterval(data => {
-      console.log("test");
-    }, this.intervalTime);
   }
 
 
   start() {
     this.locationTracker.startTracking();
+    this.saveCoords();
+    this.setInterval = setInterval(data => {
+      this.saveCoords();
+      console.log("test");
+    }, this.intervalTime);
   }
   stop() {
     this.locationTracker.stopTracking();
+    clearInterval(this.setInterval);
+    this.storage.clear();
   }
 
   start2() {
@@ -65,7 +77,35 @@ export class HomePage {
     this.locationTracker.startTracking3();
   }
 
+  clearDbCoords() {
+    this.storage.clear();
+  }
+
   saveCoords() {
+    this.unixTime = (new Date).getTime();
+
+    console.log(this.storage.driver);
+
+    // set a key/value
+    // location, time, imei, and status
+    let jsonobj = { "bgmodeActive": this.backgroundMode.isActive(), "bgmodeIsEnabled": this.backgroundMode.isEnabled(), "lat": this.locationTracker.lat, "long": this.locationTracker.lng, "time": this.unixTime, "status": this.jobStatus.work, "imei": this.device.uuid };
+
+    // set a key/value
+    this.storage.set(this.unixTime, jsonobj);
+    console.log("jsonobj.lat: " + jsonobj.lat);
+    console.log("jsonobj.long: " + jsonobj.long);
+    // to get a key/value pair
+    //this.storage.get('json').then((val) => {
+    //  console.log('Your json is', val);
+    //});
+
+    this.storage.forEach((value, key, index) => {
+      console.log(value);
+      this.jsonArray = value;
+    })
+  }
+
+  saveCoordsSQL() {
     this.sqlite.create({
       name: 'data.db',
       location: 'default'
@@ -80,7 +120,10 @@ export class HomePage {
 
       })
       .catch(e => console.log(e));
+
   }
+
+
   //   public getLocationFore() {
   //     this.geolocation.getCurrentPosition().then((resp) => {
   // 

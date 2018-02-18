@@ -13,7 +13,8 @@ import { SplashScreen } from '@ionic-native/splash-screen';
 import { Geolocation } from '@ionic-native/geolocation';
 import { Device } from '@ionic-native/device';
 import { BackgroundMode } from '@ionic-native/background-mode';
-import { SQLite, SQLiteObject } from '@ionic-native/sqlite';
+import { IonicStorageModule } from '@ionic/storage';
+import { SQLite } from '@ionic-native/sqlite';
 import { LocationTrackerProvider } from '../providers/location-tracker/location-tracker';
 
 @NgModule({
@@ -27,6 +28,10 @@ import { LocationTrackerProvider } from '../providers/location-tracker/location-
   imports: [
     BrowserModule,
     IonicModule.forRoot(MyApp),
+    IonicStorageModule.forRoot({
+      name: '__mydb',
+      driverOrder: ['websql', 'localstorage', 'indexeddb']
+    })
   ],
   bootstrap: [IonicApp],
   entryComponents: [

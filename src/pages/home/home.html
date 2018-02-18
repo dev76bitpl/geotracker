@@ -6,15 +6,42 @@
 
 <ion-content padding>
   <p>{{deviceInfo | json}}</p>
+
   <button ion-button full success (click)="getInfo()">get device info</button>
   <button ion-button (click)="start() ">Start Tracking</button>
   <button ion-button (click)="stop() ">Stop Tracking</button>
-  <button ion-button (click)="saveCoords() ">save Coords</button>
   <div *ngIf="locationTracker.buttonClicked">
-    <h4>Current Latitude: {{locationTracker.lat}}</h4>
-    <h4>Current Longitude: {{locationTracker.lng}}</h4>
+    <pre>{{jsonArray|json}}</pre>
     <h4>
       <a href="{{locationTracker.googleMapsUrl}}{{locationTracker.lat}},{{locationTracker.lng}}">check this coordinate on google maps</a>
     </h4>
   </div>
 </ion-content>
+
+<!--
+               this.zone.run(()=>{
+           this.home_game_timer = setInterval(()=>{
+
+                var link = 'https://gamerholic.com/****';
+                var data = JSON.stringify({game:this.game,uid:this.uid});
+                let headers = new Headers({ 'Content-Type' : 'application/x-www-form-urlencoded; charset=UTF-8' });
+                let options = new RequestOptions({ headers: headers });
+                return this.http.post(link, data,options)
+                //print php error
+                //.subscribe(data => {console.log(data._body)})
+                 //get json response
+                  .map(data => data.json())
+                  .catch(this.handleError)
+                  .subscribe((data) =>{
+                    this.timer_data = data,
+                    this.list_players = data
+                    //console.log(JSON.stringify(data))
+                    console.log("home ts 164" +JSON.stringify(this.timer_data))
+                  }
+                  //console.log(this.timer_data)
+                )
+                  //
+
+           },1000)
+        })
+-->
