@@ -61,7 +61,6 @@ export class HomePage {
     this.saveCoords();
     this.setInterval = setInterval(data => {
       this.saveCoords();
-      console.log("test");
     }, this.intervalTime);
   }
   stop() {
