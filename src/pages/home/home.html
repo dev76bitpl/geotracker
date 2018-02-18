@@ -9,6 +9,7 @@
   <button ion-button full success (click)="getInfo()">get device info</button>
   <button ion-button (click)="start() ">Start Tracking</button>
   <button ion-button (click)="stop() ">Stop Tracking</button>
+  <button ion-button (click)="saveCoords() ">save Coords</button>
   <div *ngIf="locationTracker.buttonClicked">
     <h4>Current Latitude: {{locationTracker.lat}}</h4>
     <h4>Current Longitude: {{locationTracker.lng}}</h4>

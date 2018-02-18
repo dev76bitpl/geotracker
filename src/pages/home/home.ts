@@ -1,11 +1,10 @@
 import { Component } from '@angular/core';
 import { NavController } from 'ionic-angular';
-import { Geolocation } from '@ionic-native/geolocation';
-import { Platform } from 'ionic-angular';
 import { Device } from '@ionic-native/device';
 import { BackgroundMode } from '@ionic-native/background-mode';
 import { LocationTrackerProvider } from '../../providers/location-tracker/location-tracker';
-
+import { AlertController } from 'ionic-angular';
+import { SQLite, SQLiteObject } from '@ionic-native/sqlite';
 
 interface coordsInterface {
   accuracy?: number,
@@ -40,22 +39,48 @@ export class HomePage {
   public longitude: any;
   public deviceInfo: deviceInterface = {};
   public deviceCoords: coordsInterface = {};
+  public intervalTime: number = 20000;
 
-  constructor(public navCtrl: NavController, private geolocation: Geolocation, public platform: Platform, private device: Device, private backgroundMode: BackgroundMode, public locationTracker: LocationTrackerProvider) {
-  }
-
-  start() {
+  constructor(public navCtrl: NavController, private device: Device, private backgroundMode: BackgroundMode, public locationTracker: LocationTrackerProvider, public alertCtrl: AlertController, private sqlite: SQLite) {
     this.backgroundMode.enable();
     console.log(this.backgroundMode.isActive());
+    console.log(this.backgroundMode.isEnabled());
+    setInterval(data => {
+      console.log("test");
+    }, this.intervalTime);
+  }
+
+
+  start() {
     this.locationTracker.startTracking();
   }
   stop() {
     this.locationTracker.stopTracking();
   }
 
+  start2() {
+    this.locationTracker.startTracking2();
+  }
+  start3() {
+    this.locationTracker.startTracking3();
+  }
+
+  saveCoords() {
+    this.sqlite.create({
+      name: 'data.db',
+      location: 'default'
+    })
+      .then((db: SQLiteObject) => {
 
 
+        db.executeSql('create table danceMoves(name VARCHAR(32))', {})
+          .then(() => console.log('Executed SQL'))
+          .catch(e => console.log(e));
 
+
+      })
+      .catch(e => console.log(e));
+  }
   //   public getLocationFore() {
   //     this.geolocation.getCurrentPosition().then((resp) => {
   // 

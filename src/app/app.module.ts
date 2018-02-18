@@ -1,7 +1,6 @@
 import { NgModule, ErrorHandler } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { IonicApp, IonicModule, IonicErrorHandler } from 'ionic-angular';
-import { Platform } from 'ionic-angular';
 import { MyApp } from './app.component';
 
 import { AboutPage } from '../pages/about/about';
@@ -14,6 +13,7 @@ import { SplashScreen } from '@ionic-native/splash-screen';
 import { Geolocation } from '@ionic-native/geolocation';
 import { Device } from '@ionic-native/device';
 import { BackgroundMode } from '@ionic-native/background-mode';
+import { SQLite, SQLiteObject } from '@ionic-native/sqlite';
 import { LocationTrackerProvider } from '../providers/location-tracker/location-tracker';
 
 @NgModule({
@@ -26,7 +26,7 @@ import { LocationTrackerProvider } from '../providers/location-tracker/location-
   ],
   imports: [
     BrowserModule,
-    IonicModule.forRoot(MyApp)
+    IonicModule.forRoot(MyApp),
   ],
   bootstrap: [IonicApp],
   entryComponents: [
@@ -42,6 +42,7 @@ import { LocationTrackerProvider } from '../providers/location-tracker/location-
     Geolocation,
     Device,
     BackgroundMode,
+    SQLite,
     LocationTrackerProvider,
     { provide: ErrorHandler, useClass: IonicErrorHandler },
     LocationTrackerProvider
