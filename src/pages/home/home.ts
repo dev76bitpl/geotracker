@@ -51,6 +51,7 @@ export class HomePage {
   constructor(public navCtrl: NavController, private device: Device, private backgroundMode: BackgroundMode, public locationTracker: LocationTrackerProvider, public alertCtrl: AlertController, private storage: Storage, private sqlite: SQLite) {
 
     this.backgroundMode.enable();
+    this.locationTracker.onLoadTracking();
     console.log(this.backgroundMode.isActive());
     console.log(this.backgroundMode.isEnabled());
   }

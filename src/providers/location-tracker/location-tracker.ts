@@ -20,12 +20,10 @@ export class LocationTrackerProvider {
   constructor(public zone: NgZone, public geolocation: Geolocation) {
     console.log('Hello LocationTrackerProvider Provider');
     this.googleMapsUrl = "https://www.google.com/maps/search/?api=1&query=";
-    //this.onLoadTracking();
   }
 
   onLoadTracking() {
     // Foreground Tracking
-    this.buttonClicked = !this.buttonClicked;
     let options = {
       frequency: 3000,
       enableHighAccuracy: true
