@@ -49,25 +49,26 @@ export class HomePage {
   public appInfo: appVersionInterface = {};
   public jsonArray = {};
   public intervalTime: number = 15000;
+  public intervalTimeInSec: number;
   public unixTime: any;
+  public dateNow: Date;
   public jobStatus = {
     break: "break",
     work: "work",
     end: "end",
   };
-  setInterval: number;
+  public setInterval: number;
+  //public items: Array<any> = [];
+  public items: {};
 
   constructor(public navCtrl: NavController, private device: Device, private backgroundMode: BackgroundMode, public locationTracker: LocationTrackerProvider, public alertCtrl: AlertController, private storage: Storage, private sqlite: SQLite, private appVersion: AppVersion) {
-
-    this.backgroundMode.enable();
-    this.getAppInfo();
-    console.log(this.backgroundMode.isActive());
-    console.log(this.backgroundMode.isEnabled());
+    this.intervalTimeInSec = this.intervalTime / 1000;
   }
 
 
   start() {
     this.locationTracker.startTracking();
+    this.saveCoords();
     this.setInterval = setInterval(data => {
       this.saveCoords();
     }, this.intervalTime);
@@ -85,32 +86,38 @@ export class HomePage {
     this.locationTracker.startTracking3();
   }
 
-  clearDbCoords() {
-    this.storage.clear();
-  }
-
   saveCoords() {
     this.unixTime = (new Date).getTime();
-
+    this.dateNow = (new Date);
     console.log(this.storage.driver);
 
     // set a key/value
     // location, time, imei, and status
-    let jsonobj = { "bgmodeActive": this.backgroundMode.isActive(), "bgmodeIsEnabled": this.backgroundMode.isEnabled(), "lat": this.locationTracker.lat, "long": this.locationTracker.lng, "time": this.unixTime, "status": this.jobStatus.work, "imei": this.device.uuid };
+    let jsonobj = { "storage.driver": this.storage.driver, "bgmodeActive": this.backgroundMode.isActive(), "bgmodeIsEnabled": this.backgroundMode.isEnabled(), "lat": this.locationTracker.lat, "long": this.locationTracker.lng, "date": this.dateNow, "time": this.unixTime, "status": this.jobStatus.work, "imei": this.device.uuid };
 
     // set a key/value
-    this.storage.set(this.unixTime, jsonobj);
+    this.storage.set("coords", jsonobj);
     console.log("jsonobj.lat: " + jsonobj.lat);
     console.log("jsonobj.long: " + jsonobj.long);
     // to get a key/value pair
-    //this.storage.get('json').then((val) => {
-    //  console.log('Your json is', val);
-    //});
+    this.storage.get('coords').then((val) => {
+      console.log(val.lat);
+      this.items = val;
+    });
 
-    this.storage.forEach((value, key, index) => {
-      console.log(value);
-      this.jsonArray = value;
-    })
+    /*this.storage.forEach((value, key, index) => {
+      console.log(value.lat);
+      this.items = value;
+    })*/
+  }
+
+  ionViewDidLoad() {
+    this.backgroundMode.enable();
+    this.getAppInfo();
+    this.getDeviceInfo();
+    console.log(this.backgroundMode.isActive());
+    console.log(this.backgroundMode.isEnabled());
+
   }
 
   saveCoordsSQL() {
@@ -179,6 +186,7 @@ export class HomePage {
     this.deviceInfo.manufacturer = this.device.manufacturer;
     this.deviceInfo.serial = this.device.serial;
     this.deviceInfo.isVirtual = this.device.isVirtual;
+    console.log(this.deviceInfo);
     //}
   }
 }

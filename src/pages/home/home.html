@@ -13,27 +13,34 @@
       <p>{{deviceInfo | json}}</p>
     </ion-card-content>
   </ion-card>
-  <button ion-button full success (click)="getDeviceInfo()">get device info</button>
   <button ion-button (click)="start() ">Start Tracking</button>
-  <button ion-button (click)="stop() ">Stop Tracking</button>
+  <button ion-button (click)="stop() ">Stop Tracking and clear database</button>
   <div *ngIf="locationTracker.buttonClicked">
 
     <ion-card>
       <ion-card-header>
-        GET CURRENT POSITION
+        LOCATION FROM DEVICE
+        <p>refresh {{this.intervalTimeInSec}}s</p>
+      </ion-card-header>
+      <ion-card-content>
+        <h4>Current Date: {{this.dateNow}}</h4>
+        <h4>Current Latitude: {{locationTracker.lat}}</h4>
+        <h4>Current Longitude: {{locationTracker.lng}}</h4>
+      </ion-card-content>
+    </ion-card>
+    <ion-card>
+      <ion-card-header>
+        LOCATION FROM DATABASE
         <p>refresh 15s</p>
       </ion-card-header>
       <ion-card-content>
-        <h4>Current Latitude: {{locationTracker.lat}}</h4>
-        <h4>Current Longitude: {{locationTracker.lng}}</h4>
-
-        <pre>{{jsonArray|json}}</pre>
-        <p>
-          <a href="{{locationTracker.googleMapsUrl}}{{locationTracker.lat}},{{locationTracker.lng}}">check this coordinate on google maps</a>
-        </p>
-
+        <pre>{{items|json}}</pre>
       </ion-card-content>
     </ion-card>
+    <p>
+      <a href="{{locationTracker.googleMapsUrl}}{{locationTracker.lat}},{{locationTracker.lng}}">check this coordinate on google maps</a>
+    </p>
+
   </div>
 </ion-content>
 
