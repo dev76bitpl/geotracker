@@ -15,6 +15,7 @@ import { Device } from '@ionic-native/device';
 import { BackgroundMode } from '@ionic-native/background-mode';
 import { IonicStorageModule } from '@ionic/storage';
 import { SQLite } from '@ionic-native/sqlite';
+import { AppVersion } from '@ionic-native/app-version';
 import { LocationTrackerProvider } from '../providers/location-tracker/location-tracker';
 
 @NgModule({
@@ -50,6 +51,7 @@ import { LocationTrackerProvider } from '../providers/location-tracker/location-
     SQLite,
     LocationTrackerProvider,
     { provide: ErrorHandler, useClass: IonicErrorHandler },
+    AppVersion,
     LocationTrackerProvider
   ]
 })

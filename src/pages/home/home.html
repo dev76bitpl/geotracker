@@ -1,6 +1,6 @@
 <ion-header>
   <ion-navbar>
-    <ion-title>Home</ion-title>
+    <ion-title>{{appInfo.appName}} - {{appInfo.versionNumber}}/{{appInfo.versionCode}}</ion-title>
   </ion-navbar>
 </ion-header>
 
@@ -13,7 +13,7 @@
       <p>{{deviceInfo | json}}</p>
     </ion-card-content>
   </ion-card>
-  <button ion-button full success (click)="getInfo()">get device info</button>
+  <button ion-button full success (click)="getDeviceInfo()">get device info</button>
   <button ion-button (click)="start() ">Start Tracking</button>
   <button ion-button (click)="stop() ">Stop Tracking</button>
   <div *ngIf="locationTracker.buttonClicked">

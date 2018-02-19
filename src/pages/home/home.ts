@@ -5,6 +5,7 @@ import { BackgroundMode } from '@ionic-native/background-mode';
 import { LocationTrackerProvider } from '../../providers/location-tracker/location-tracker';
 import { AlertController } from 'ionic-angular';
 import { Storage } from '@ionic/storage';
+import { AppVersion } from '@ionic-native/app-version';
 import { SQLite, SQLiteObject } from '@ionic-native/sqlite';
 
 interface coordsInterface {
@@ -31,6 +32,13 @@ interface deviceInterface {
 
 };
 
+interface appVersionInterface {
+  appName?: any,
+  packageName?: any,
+  versionCode?: any,
+  versionNumber?: any,
+}
+
 @Component({
   selector: 'page-home',
   templateUrl: 'home.html'
@@ -38,6 +46,7 @@ interface deviceInterface {
 export class HomePage {
   public deviceInfo: deviceInterface = {};
   public deviceCoords: coordsInterface = {};
+  public appInfo: appVersionInterface = {};
   public jsonArray = {};
   public intervalTime: number = 15000;
   public unixTime: any;
@@ -48,10 +57,10 @@ export class HomePage {
   };
   setInterval: number;
 
-  constructor(public navCtrl: NavController, private device: Device, private backgroundMode: BackgroundMode, public locationTracker: LocationTrackerProvider, public alertCtrl: AlertController, private storage: Storage, private sqlite: SQLite) {
+  constructor(public navCtrl: NavController, private device: Device, private backgroundMode: BackgroundMode, public locationTracker: LocationTrackerProvider, public alertCtrl: AlertController, private storage: Storage, private sqlite: SQLite, private appVersion: AppVersion) {
 
     this.backgroundMode.enable();
-    this.locationTracker.onLoadTracking();
+    this.getAppInfo();
     console.log(this.backgroundMode.isActive());
     console.log(this.backgroundMode.isEnabled());
   }
@@ -59,7 +68,6 @@ export class HomePage {
 
   start() {
     this.locationTracker.startTracking();
-    this.saveCoords();
     this.setInterval = setInterval(data => {
       this.saveCoords();
     }, this.intervalTime);
@@ -123,6 +131,12 @@ export class HomePage {
 
   }
 
+  public getAppInfo() {
+    this.appInfo.appName = this.appVersion.getAppName();
+    this.appInfo.packageName = this.appVersion.getPackageName();
+    this.appInfo.versionCode = this.appVersion.getVersionCode();
+    this.appInfo.versionNumber = this.appVersion.getVersionNumber();
+  }
 
   //   public getLocationFore() {
   //     this.geolocation.getCurrentPosition().then((resp) => {
@@ -154,7 +168,7 @@ export class HomePage {
   //     });
   //   }
 
-  public getInfo() {
+  public getDeviceInfo() {
     //const device = this.platform;
     //if (device.is('cordova')) {
     this.deviceInfo.id = this.device.uuid;
