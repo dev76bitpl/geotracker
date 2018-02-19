@@ -17,6 +17,7 @@ import { IonicStorageModule } from '@ionic/storage';
 import { SQLite } from '@ionic-native/sqlite';
 import { AppVersion } from '@ionic-native/app-version';
 import { LocationTrackerProvider } from '../providers/location-tracker/location-tracker';
+import { AppInformationProvider } from '../providers/app-information/app-information';
 
 @NgModule({
   declarations: [
@@ -52,7 +53,8 @@ import { LocationTrackerProvider } from '../providers/location-tracker/location-
     LocationTrackerProvider,
     { provide: ErrorHandler, useClass: IonicErrorHandler },
     AppVersion,
-    LocationTrackerProvider
+    LocationTrackerProvider,
+    AppInformationProvider
   ]
 })
 export class AppModule { }

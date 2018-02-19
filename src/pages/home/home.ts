@@ -3,9 +3,9 @@ import { NavController } from 'ionic-angular';
 import { Device } from '@ionic-native/device';
 import { BackgroundMode } from '@ionic-native/background-mode';
 import { LocationTrackerProvider } from '../../providers/location-tracker/location-tracker';
+import { AppInformationProvider } from '../../providers/app-information/app-information';
 import { AlertController } from 'ionic-angular';
 import { Storage } from '@ionic/storage';
-import { AppVersion } from '@ionic-native/app-version';
 import { SQLite, SQLiteObject } from '@ionic-native/sqlite';
 
 interface coordsInterface {
@@ -61,7 +61,7 @@ export class HomePage {
   //public items: Array<any> = [];
   public items: {};
 
-  constructor(public navCtrl: NavController, private device: Device, private backgroundMode: BackgroundMode, public locationTracker: LocationTrackerProvider, public alertCtrl: AlertController, private storage: Storage, private sqlite: SQLite, private appVersion: AppVersion) {
+  constructor(public navCtrl: NavController, private device: Device, private backgroundMode: BackgroundMode, public locationTracker: LocationTrackerProvider, public alertCtrl: AlertController, private storage: Storage, private sqlite: SQLite, public appInformation: AppInformationProvider) {
     this.intervalTimeInSec = this.intervalTime / 1000;
   }
 
@@ -97,6 +97,7 @@ export class HomePage {
 
     // set a key/value
     this.storage.set("coords", jsonobj);
+    this.storage.set(this.unixTime, jsonobj);
     console.log("jsonobj.lat: " + jsonobj.lat);
     console.log("jsonobj.long: " + jsonobj.long);
     // to get a key/value pair
@@ -113,7 +114,6 @@ export class HomePage {
 
   ionViewDidLoad() {
     this.backgroundMode.enable();
-    this.getAppInfo();
     this.getDeviceInfo();
     console.log(this.backgroundMode.isActive());
     console.log(this.backgroundMode.isEnabled());
@@ -136,13 +136,6 @@ export class HomePage {
       })
       .catch(e => console.log(e));
 
-  }
-
-  public getAppInfo() {
-    this.appInfo.appName = this.appVersion.getAppName();
-    this.appInfo.packageName = this.appVersion.getPackageName();
-    this.appInfo.versionCode = this.appVersion.getVersionCode();
-    this.appInfo.versionNumber = this.appVersion.getVersionNumber();
   }
 
   //   public getLocationFore() {
