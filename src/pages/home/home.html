@@ -24,6 +24,9 @@
         <p>refresh 15s</p>
       </ion-card-header>
       <ion-card-content>
+        <h4>Current Latitude: {{locationTracker.lat}}</h4>
+        <h4>Current Longitude: {{locationTracker.lng}}</h4>
+
         <pre>{{jsonArray|json}}</pre>
       </ion-card-content>
     </ion-card>

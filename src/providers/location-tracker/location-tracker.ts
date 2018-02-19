@@ -25,13 +25,13 @@ export class LocationTrackerProvider {
   onLoadTracking() {
     // Foreground Tracking
     let options = {
-      frequency: 3000,
+      frequency: 0,
       enableHighAccuracy: true
     };
 
     this.watch = this.geolocation.watchPosition(options).filter((p: any) => p.code === undefined).subscribe((position: Geoposition) => {
 
-      console.log(position);
+      //console.log(position);
 
       // Run update inside of Angular's zone
       this.zone.run(() => {
