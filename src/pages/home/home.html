@@ -1,6 +1,6 @@
 <ion-header>
   <ion-navbar>
-    <ion-title>{{appInfo.appName}} - {{appInfo.versionNumber}}/{{appInfo.versionCode}}</ion-title>
+    <ion-title>home</ion-title>
   </ion-navbar>
 </ion-header>
 
@@ -28,11 +28,12 @@
         <h4>Current Longitude: {{locationTracker.lng}}</h4>
 
         <pre>{{jsonArray|json}}</pre>
+        <p>
+          <a href="{{locationTracker.googleMapsUrl}}{{locationTracker.lat}},{{locationTracker.lng}}">check this coordinate on google maps</a>
+        </p>
+
       </ion-card-content>
     </ion-card>
-    <h4>
-      <a href="{{locationTracker.googleMapsUrl}}{{locationTracker.lat}},{{locationTracker.lng}}">check this coordinate on google maps</a>
-    </h4>
   </div>
 </ion-content>
 

@@ -22,10 +22,11 @@ export class LocationTrackerProvider {
     this.googleMapsUrl = "https://www.google.com/maps/search/?api=1&query=";
   }
 
-  onLoadTracking() {
+  startTracking() {
     // Foreground Tracking
+    this.buttonClicked = !this.buttonClicked;
     let options = {
-      frequency: 0,
+      frequency: 3000,
       enableHighAccuracy: true
     };
 
@@ -39,28 +40,7 @@ export class LocationTrackerProvider {
         this.lng = position.coords.longitude;
         this.position = position;
       });
-
-    });
-  }
-
-  startTracking() {
-    // Foreground Tracking
-    this.buttonClicked = !this.buttonClicked;
-    let options = {
-      frequency: 3000,
-      enableHighAccuracy: true
-    };
-
-    this.watch = this.geolocation.watchPosition(options).filter((p: any) => p.code === undefined).subscribe((position: Geoposition) => {
-
-      console.log(position);
-
-      // Run update inside of Angular's zone
-      this.zone.run(() => {
-        this.lat = position.coords.latitude;
-        this.lng = position.coords.longitude;
-        this.position = position;
-      });
+      console.log("this.lat: " + this.lat + " | this.lng: " + this.lng);
 
     });
   }
