@@ -6,20 +6,7 @@ import { LocationTrackerProvider } from '../../providers/location-tracker/locati
 import { AppInformationProvider } from '../../providers/app-information/app-information';
 import { AlertController } from 'ionic-angular';
 import { Storage } from '@ionic/storage';
-import { SQLite, SQLiteObject } from '@ionic-native/sqlite';
 
-interface coordsInterface {
-  accuracy?: number,
-  altitude?: number,
-  altitudeAccuracy?: number,
-  heading?: number,
-  latitude?: number,
-  longitude?: number,
-  speed?: number,
-  time?: number,
-  timestamp?: number,
-
-};
 interface deviceInterface {
   id?: string,
   model?: string,
@@ -32,21 +19,12 @@ interface deviceInterface {
 
 };
 
-interface appVersionInterface {
-  appName?: any,
-  packageName?: any,
-  versionCode?: any,
-  versionNumber?: any,
-}
-
 @Component({
   selector: 'page-home',
   templateUrl: 'home.html'
 })
 export class HomePage {
   public deviceInfo: deviceInterface = {};
-  public deviceCoords: coordsInterface = {};
-  public appInfo: appVersionInterface = {};
   public jsonArray = {};
   public intervalTime: number = 15000;
   public intervalTimeInSec: number;
@@ -61,7 +39,7 @@ export class HomePage {
   //public items: Array<any> = [];
   public items: {};
 
-  constructor(public navCtrl: NavController, private device: Device, private backgroundMode: BackgroundMode, public locationTracker: LocationTrackerProvider, public alertCtrl: AlertController, private storage: Storage, private sqlite: SQLite, public appInformation: AppInformationProvider) {
+  constructor(public navCtrl: NavController, private device: Device, private backgroundMode: BackgroundMode, public locationTracker: LocationTrackerProvider, public alertCtrl: AlertController, private storage: Storage, public appInformation: AppInformationProvider) {
     this.intervalTimeInSec = this.intervalTime / 1000;
   }
 
@@ -119,54 +97,6 @@ export class HomePage {
     console.log(this.backgroundMode.isEnabled());
 
   }
-
-  saveCoordsSQL() {
-    this.sqlite.create({
-      name: 'data.db',
-      location: 'default'
-    })
-      .then((db: SQLiteObject) => {
-
-
-        db.executeSql('create table danceMoves(name VARCHAR(32))', {})
-          .then(() => console.log('Executed SQL'))
-          .catch(e => console.log(e));
-
-
-      })
-      .catch(e => console.log(e));
-
-  }
-
-  //   public getLocationFore() {
-  //     this.geolocation.getCurrentPosition().then((resp) => {
-  // 
-  //       /*this.deviceCoords.accuracy = location.coords.accuracy;
-  //       this.deviceCoords.altitude = location.coords.altitude;
-  //       this.deviceCoords.altitudeAccuracy = location.coords.altitudeAccuracy;
-  //       this.deviceCoords.heading = location.coords.heading;
-  //       this.deviceCoords.latitude = location.coords.latitude;
-  //       this.deviceCoords.longitude = location.coords.longitude;
-  //       this.deviceCoords.speed = location.coords.speed;
-  //       this.deviceCoords.time = location.time;
-  //       this.deviceCoords.timestamp = location.timestamp;*/
-  // 
-  //       this.deviceCoords.latitude = resp.coords.latitude;
-  //       this.deviceCoords.longitude = resp.coords.longitude;
-  // 
-  //       resp.coords.latitude;
-  //       resp.coords.longitude;
-  //       console.log("lat: " + resp.coords.latitude + " | long: " + resp.coords.longitude);
-  //     }).catch((error) => {
-  //       console.log('Error getting location', error);
-  //     });
-  //     let watch = this.geolocation.watchPosition();
-  //     watch.subscribe((data) => {
-  //       console.log(data);
-  //       //this.latitude = data.coords.latitude;
-  //       //this.longitude = data.coords.longitude;
-  //     });
-  //   }
 
   public getDeviceInfo() {
     //const device = this.platform;

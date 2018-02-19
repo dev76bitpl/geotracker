@@ -14,7 +14,6 @@ import { Geolocation } from '@ionic-native/geolocation';
 import { Device } from '@ionic-native/device';
 import { BackgroundMode } from '@ionic-native/background-mode';
 import { IonicStorageModule } from '@ionic/storage';
-import { SQLite } from '@ionic-native/sqlite';
 import { AppVersion } from '@ionic-native/app-version';
 import { LocationTrackerProvider } from '../providers/location-tracker/location-tracker';
 import { AppInformationProvider } from '../providers/app-information/app-information';
@@ -49,7 +48,6 @@ import { AppInformationProvider } from '../providers/app-information/app-informa
     Geolocation,
     Device,
     BackgroundMode,
-    SQLite,
     LocationTrackerProvider,
     { provide: ErrorHandler, useClass: IonicErrorHandler },
     AppVersion,
