@@ -17,6 +17,8 @@ import { IonicStorageModule } from '@ionic/storage';
 import { AppVersion } from '@ionic-native/app-version';
 import { LocationTrackerProvider } from '../providers/location-tracker/location-tracker';
 import { AppInformationProvider } from '../providers/app-information/app-information';
+import { LocalNotificationProvider } from '../providers/local-notification/local-notification';
+import { LocalNotifications } from '@ionic-native/local-notifications';
 
 @NgModule({
   declarations: [
@@ -52,7 +54,9 @@ import { AppInformationProvider } from '../providers/app-information/app-informa
     { provide: ErrorHandler, useClass: IonicErrorHandler },
     AppVersion,
     LocationTrackerProvider,
-    AppInformationProvider
+    AppInformationProvider,
+    LocalNotificationProvider,
+    LocalNotifications
   ]
 })
 export class AppModule { }

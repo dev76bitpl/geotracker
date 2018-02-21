@@ -10,15 +10,17 @@ import { Platform } from 'ionic-angular';
 */
 @Injectable()
 export class AppInformationProvider {
-
+  public appTitle: any = "Job Tracking v 0.4";
   constructor(public zone: NgZone, public app: AppVersion, private platform: Platform) {
     console.log('Hello AppInformationProvider Provider');
-    this.zone.run(() => {
-
+    app.getVersionNumber().then(ver => {
+      this.app = ver;
+      console.log(this.app)
+    }).catch(function (error) {
+      console.log(error);
     });
-
   }
-  async getAppName() {
+  /*async getAppName() {
     const appName = await this.app.getAppName();
     console.log(appName);
   }
@@ -33,5 +35,5 @@ export class AppInformationProvider {
   async getVersionCode() {
     const versionCode = await this.app.getVersionCode();
     console.log(versionCode);
-  }
+  }*/
 }

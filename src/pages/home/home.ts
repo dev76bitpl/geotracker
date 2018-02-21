@@ -4,6 +4,7 @@ import { Device } from '@ionic-native/device';
 import { BackgroundMode } from '@ionic-native/background-mode';
 import { LocationTrackerProvider } from '../../providers/location-tracker/location-tracker';
 import { AppInformationProvider } from '../../providers/app-information/app-information';
+import { LocalNotificationProvider } from '../../providers/local-notification/local-notification';
 import { AlertController } from 'ionic-angular';
 import { Storage } from '@ionic/storage';
 
@@ -19,12 +20,21 @@ interface deviceInterface {
 
 };
 
+interface appVersionInterface {
+  appName?: any,
+  packageName?: any,
+  versionCode?: any,
+  versionNumber?: any,
+}
+
 @Component({
   selector: 'page-home',
   templateUrl: 'home.html'
 })
 export class HomePage {
+  public appTitle: any;
   public deviceInfo: deviceInterface = {};
+  public appInfo: appVersionInterface = {};
   public jsonArray = {};
   public intervalTime: number = 15000;
   public intervalTimeInSec: number;
@@ -39,7 +49,7 @@ export class HomePage {
   //public items: Array<any> = [];
   public items: {};
 
-  constructor(public navCtrl: NavController, private device: Device, private backgroundMode: BackgroundMode, public locationTracker: LocationTrackerProvider, public alertCtrl: AlertController, private storage: Storage, public appInformation: AppInformationProvider) {
+  constructor(public navCtrl: NavController, private device: Device, private backgroundMode: BackgroundMode, public locationTracker: LocationTrackerProvider, public alertCtrl: AlertController, private storage: Storage, public appInformation: AppInformationProvider, public localNotification: LocalNotificationProvider) {
     this.intervalTimeInSec = this.intervalTime / 1000;
   }
 
@@ -83,7 +93,11 @@ export class HomePage {
       console.log(val.lat);
       this.items = val;
     });
-
+    this.storage.get('coordinates').then((data) => {
+      jsonobj = data;
+      console.log(jsonobj)
+    });
+    this.localNotification.pushNotification(jsonobj.lat, jsonobj.long);
     /*this.storage.forEach((value, key, index) => {
       console.log(value.lat);
       this.items = value;
@@ -91,11 +105,20 @@ export class HomePage {
   }
 
   ionViewDidLoad() {
+    this.appTitle = this.appInformation.appTitle;
     this.backgroundMode.enable();
+    this.getAppInfo();
     this.getDeviceInfo();
     console.log(this.backgroundMode.isActive());
     console.log(this.backgroundMode.isEnabled());
 
+  }
+
+  public getAppInfo() {
+    this.appInfo.appName = this.appInformation.app.getAppName();
+    this.appInfo.packageName = this.appInformation.app.getPackageName();
+    this.appInfo.versionCode = this.appInformation.app.getVersionCode();
+    this.appInfo.versionNumber = this.appInformation.app.getVersionNumber();
   }
 
   public getDeviceInfo() {
