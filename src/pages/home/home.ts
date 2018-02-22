@@ -36,7 +36,7 @@ export class HomePage {
   public deviceInfo: deviceInterface = {};
   public appInfo: appVersionInterface = {};
   public jsonArray = {};
-  public intervalTime: number = 15000;
+  public intervalTime: number = 20000;
   public intervalTimeInSec: number;
   public unixTime: any;
   public dateNow: Date;
@@ -105,6 +105,7 @@ export class HomePage {
   }
 
   ionViewDidLoad() {
+    console.log("ionViewDidLoad");
     this.appTitle = this.appInformation.appTitle;
     this.backgroundMode.enable();
     this.getAppInfo();
@@ -132,6 +133,7 @@ export class HomePage {
     this.deviceInfo.manufacturer = this.device.manufacturer;
     this.deviceInfo.serial = this.device.serial;
     this.deviceInfo.isVirtual = this.device.isVirtual;
+    console.log("this.deviceInfo");
     console.log(this.deviceInfo);
     //}
   }
