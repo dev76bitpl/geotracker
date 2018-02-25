@@ -1,0 +1,10 @@
+{"time":1519573993029,"imei":null,"latitude":52.2296756,"longitude":21.0122287,"status":"working"}
+{"time":1519574288083,"imei":"EDB6F7F4-1ADB-4CE5-BF7C-0A45821F0758","latitude":53.1030642316,"longitude":17.855302593,"status":"working"}
+{"time":1519574308084,"imei":"EDB6F7F4-1ADB-4CE5-BF7C-0A45821F0758","latitude":53.1030444819,"longitude":17.8553450607,"status":"working"}
+{"time":1519574328086,"imei":"EDB6F7F4-1ADB-4CE5-BF7C-0A45821F0758","latitude":53.1030444819,"longitude":17.8553450607,"status":"working"}
+{"time":1519575023048,"imei":"65599E46-4048-44CA-B917-AC53FDB95C8F","latitude":53.1032474947,"longitude":17.8553988672,"status":"working"}
+{"time":1519575023048,"imei":"65599E46-4048-44CA-B917-AC53FDB95C8F","latitude":53.1031502404,"longitude":17.8553570147,"status":"working"}
+{"time":1519575023048,"imei":"65599E46-4048-44CA-B917-AC53FDB95C8F","latitude":53.1031502404,"longitude":17.8553570147,"status":"working"}
+{"time":1519575023048,"imei":"65599E46-4048-44CA-B917-AC53FDB95C8F","status":"working"}
+{"time":1519575023048,"imei":"65599E46-4048-44CA-B917-AC53FDB95C8F","latitude":53.1031052729,"longitude":17.855331912,"status":"working"}
+{"time":1519575023048,"imei":"65599E46-4048-44CA-B917-AC53FDB95C8F","latitude":53.1031052729,"longitude":17.855331912,"status":"working"}

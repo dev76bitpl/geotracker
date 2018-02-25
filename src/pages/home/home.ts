@@ -7,6 +7,7 @@ import { AppInformationProvider } from '../../providers/app-information/app-info
 import { LocalNotificationProvider } from '../../providers/local-notification/local-notification';
 import { AlertController } from 'ionic-angular';
 import { Storage } from '@ionic/storage';
+import { Http } from '@angular/http';
 
 interface deviceInterface {
   id?: string,
@@ -39,24 +40,27 @@ export class HomePage {
   public intervalTime: number = 20000;
   public intervalTimeInSec: number;
   public unixTime: any;
-  public dateNow: Date;
+  public dateNow: Date = (new Date);
+  public apilink = 'http://luczynski.eu/api/api.php';
   public jobStatus = {
-    break: "break",
-    work: "work",
-    end: "end",
+    break: "on break",
+    work: "working",
+    end: "end of day",
   };
+
   public setInterval: number;
   //public items: Array<any> = [];
   public items: {};
+  public data: any = {};
 
-  constructor(public navCtrl: NavController, private device: Device, private backgroundMode: BackgroundMode, public locationTracker: LocationTrackerProvider, public alertCtrl: AlertController, private storage: Storage, public appInformation: AppInformationProvider, public localNotification: LocalNotificationProvider) {
+  constructor(public navCtrl: NavController, private device: Device, private backgroundMode: BackgroundMode, public locationTracker: LocationTrackerProvider, public alertCtrl: AlertController, private storage: Storage, public appInformation: AppInformationProvider, public localNotification: LocalNotificationProvider, public http: Http) {
     this.intervalTimeInSec = this.intervalTime / 1000;
+    this.data.response = '';
+    this.http = http;
   }
-
 
   start() {
     this.locationTracker.startTracking();
-    this.saveCoords();
     this.setInterval = setInterval(data => {
       this.saveCoords();
     }, this.intervalTime);
@@ -67,37 +71,43 @@ export class HomePage {
     this.storage.clear();
   }
 
-  start2() {
-    this.locationTracker.startTracking2();
-  }
-  start3() {
-    this.locationTracker.startTracking3();
-  }
-
   saveCoords() {
+    console.log("saveCoords()")
     this.unixTime = (new Date).getTime();
-    this.dateNow = (new Date);
     console.log(this.storage.driver);
 
-    // set a key/value
-    // location, time, imei, and status
+    /* create json object from functions to storage save */
     let jsonobj = { "storage.driver": this.storage.driver, "bgmodeActive": this.backgroundMode.isActive(), "bgmodeIsEnabled": this.backgroundMode.isEnabled(), "lat": this.locationTracker.lat, "long": this.locationTracker.lng, "date": this.dateNow, "time": this.unixTime, "status": this.jobStatus.work, "imei": this.device.uuid };
 
-    // set a key/value
+    // add json object to storage database
     this.storage.set("coords", jsonobj);
     this.storage.set(this.unixTime, jsonobj);
     console.log("jsonobj.lat: " + jsonobj.lat);
     console.log("jsonobj.long: " + jsonobj.long);
-    // to get a key/value pair
-    this.storage.get('coords').then((val) => {
-      console.log(val.lat);
-      this.items = val;
-    });
-    this.storage.get('coordinates').then((data) => {
-      jsonobj = data;
-      console.log(jsonobj)
-    });
+    // push notification with coords
     this.localNotification.pushNotification(jsonobj.lat, jsonobj.long);
+    // get data from storage for http post to server
+    this.storage.get('coords').then((val) => {
+      this.items = val;
+      var myData = JSON.stringify({
+        time: val.time,
+        imei: val.imei,
+        latitude: val.lat,
+        longitude: val.long,
+        status: val.status
+      });
+
+      if (val.lat > 0 && val.long > 0 && val.imei != null) {
+        // send data to server
+        this.http.post(this.apilink, myData)
+          .subscribe(data => {
+            this.data.response = data["_body"];
+          }, error => {
+            console.log("Oooops!");
+          });
+      }
+    });
+
     /*this.storage.forEach((value, key, index) => {
       console.log(value.lat);
       this.items = value;

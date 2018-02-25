@@ -19,6 +19,7 @@ import { LocationTrackerProvider } from '../providers/location-tracker/location-
 import { AppInformationProvider } from '../providers/app-information/app-information';
 import { LocalNotificationProvider } from '../providers/local-notification/local-notification';
 import { LocalNotifications } from '@ionic-native/local-notifications';
+import { HttpModule } from '@angular/http';
 
 @NgModule({
   declarations: [
@@ -31,6 +32,7 @@ import { LocalNotifications } from '@ionic-native/local-notifications';
   imports: [
     BrowserModule,
     IonicModule.forRoot(MyApp),
+    HttpModule,
     IonicStorageModule.forRoot({
       name: '__mydb',
       driverOrder: ['websql', 'localstorage', 'indexeddb']
@@ -56,7 +58,7 @@ import { LocalNotifications } from '@ionic-native/local-notifications';
     LocationTrackerProvider,
     AppInformationProvider,
     LocalNotificationProvider,
-    LocalNotifications
+    LocalNotifications,
   ]
 })
 export class AppModule { }

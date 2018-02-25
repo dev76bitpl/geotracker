@@ -3,10 +3,19 @@ import { Geolocation, Geoposition } from '@ionic-native/geolocation';
 import 'rxjs/add/operator/filter';
 
 /*
-  Generated class for the LocationTrackerProvider provider.
-
-  See https://angular.io/guide/dependency-injection for more info on providers
-  and Angular DI.
+The JSON keys we are using are location, time, imei and status
+The URL and the body where the location should be sent to is:
+POST http://work.simplicityengine.net:8086/location
+Example keys and data
+"time": "1502711997",
+"imei": "353413088320170",
+"latitude": "40.78",
+"longitude": "-73.97"
+"status": "working"
+All possible statuses:
+"status": "working"
+"status": "on break"
+"status": "end of day"
 */
 @Injectable()
 export class LocationTrackerProvider {
