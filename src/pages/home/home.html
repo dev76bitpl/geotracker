@@ -13,7 +13,6 @@
       <p>{{deviceInfo | json}}</p>
     </ion-card-content>
   </ion-card>
-  <button ion-button (click)="postToApi() ">test api</button>
   <button ion-button (click)="start() ">Start Tracking</button>
   <button ion-button (click)="stop() ">Stop Tracking and clear database</button>
   <div *ngIf="locationTracker.buttonClicked">
