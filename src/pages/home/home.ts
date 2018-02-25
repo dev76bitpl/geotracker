@@ -7,7 +7,7 @@ import { AppInformationProvider } from '../../providers/app-information/app-info
 import { LocalNotificationProvider } from '../../providers/local-notification/local-notification';
 import { AlertController } from 'ionic-angular';
 import { Storage } from '@ionic/storage';
-import { Http } from '@angular/http';
+import { Http, Headers } from '@angular/http';
 
 interface deviceInterface {
   id?: string,
@@ -42,6 +42,8 @@ export class HomePage {
   public unixTime: any;
   public dateNow: Date = (new Date);
   public apilink = 'http://luczynski.eu/api/api.php';
+  //public apilink = 'http://work.simplicityengine.net:8086/location';
+
   public jobStatus = {
     break: "on break",
     work: "working",
@@ -99,7 +101,11 @@ export class HomePage {
 
       if (val.lat > 0 && val.long > 0 && val.imei != null) {
         // send data to server
-        this.http.post(this.apilink, myData)
+        //var headers = new Headers();
+        //headers.append('Content-Type', 'application/x-www-form-urlencoded');
+        this.http.post(this.apilink, myData, {
+          //headers: headers
+        })
           .subscribe(data => {
             this.data.response = data["_body"];
           }, error => {
