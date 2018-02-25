@@ -92,5 +92,4 @@
     <plugin name="cordova-plugin-app-version" spec="^0.1.9" />
     <engine name="ios" spec="^4.5.4" />
     <engine name="android" spec="^7.0.0" />
-    <allow-navigation href="http://192.168.115.10:8100" />
 </widget>
