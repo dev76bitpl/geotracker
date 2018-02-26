@@ -67,9 +67,17 @@ export class HomePage {
       this.saveCoords();
     }, this.intervalTime);
   }
+
+  pause() {
+    this.locationTracker.pauseTracking();
+    this.saveCoords();
+    clearInterval(this.setInterval);
+  }
+
   stop() {
     this.locationTracker.stopTracking();
     clearInterval(this.setInterval);
+    this.saveCoords();
     this.storage.clear();
   }
 
@@ -91,6 +99,7 @@ export class HomePage {
     // get data from storage for http post to server
     this.storage.get('coords').then((val) => {
       this.items = val;
+
       var myData = JSON.stringify({
         time: val.time,
         imei: val.imei,
@@ -99,19 +108,21 @@ export class HomePage {
         status: val.status
       });
 
-      if (val.lat > 0 && val.long > 0 && val.imei != null) {
-        // send data to server
-        //var headers = new Headers();
-        //headers.append('Content-Type', 'application/x-www-form-urlencoded');
-        this.http.post(this.apilink, myData, {
-          //headers: headers
-        })
-          .subscribe(data => {
-            this.data.response = data["_body"];
-          }, error => {
-            console.log("Oooops!");
-          });
-      }
+      //if (val.lat > 0 && val.long > 0 && val.imei != null) {
+      // send data to server
+      var headers = new Headers();
+      //headers.append('Content-Type', 'application/x-www-form-urlencoded');
+      headers.append('Content-Type', 'application/json');
+      this.http.post(this.apilink, myData, {
+        headers: headers
+      })
+        .subscribe(data => {
+          this.data.response = JSON.parse(data['_body']);
+          console.log("this.data.response: " + this.data.response.status);
+          //let access = (this.data.response.success === true);
+        }, error => {
+          console.log("error: " + JSON.stringify(error.json()));
+        });
     });
 
     /*this.storage.forEach((value, key, index) => {
@@ -137,10 +148,7 @@ export class HomePage {
     this.appInfo.versionCode = this.appInformation.app.getVersionCode();
     this.appInfo.versionNumber = this.appInformation.app.getVersionNumber();
   }
-
   public getDeviceInfo() {
-    //const device = this.platform;
-    //if (device.is('cordova')) {
     this.deviceInfo.id = this.device.uuid;
     this.deviceInfo.model = this.device.model;
     this.deviceInfo.cordova = this.device.cordova;
@@ -151,6 +159,5 @@ export class HomePage {
     this.deviceInfo.isVirtual = this.device.isVirtual;
     console.log("this.deviceInfo");
     console.log(this.deviceInfo);
-    //}
   }
 }

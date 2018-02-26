@@ -54,6 +54,9 @@ export class LocationTrackerProvider {
     });
   }
 
+  pauseTracking() {
+
+  }
   stopTracking() {
     console.log("stop tracking...");
     this.buttonClicked = !this.buttonClicked;
@@ -61,32 +64,4 @@ export class LocationTrackerProvider {
     this.lat = 0;
     this.lng = 0;
   }
-
-  startTracking2() {
-    this.buttonClicked = !this.buttonClicked;
-    this.geolocation.getCurrentPosition().then((resp) => {
-      // resp.coords.latitude
-      // resp.coords.longitude
-      this.lat = resp.coords.latitude;
-      this.lng = resp.coords.longitude;
-      console.log(resp);
-      console.log("location-tracker lat: " + resp.coords.latitude);
-      console.log("location-tracker lng: " + resp.coords.longitude);
-    }).catch((error) => {
-      console.log('Error getting location', error);
-    });
-  }
-  startTracking3() {
-    this.buttonClicked = !this.buttonClicked;
-    let watch = this.geolocation.watchPosition();
-    watch.subscribe((data) => {
-      // data can be a set of coordinates, or an error (if an error occurred).
-      // data.coords.latitude
-      // data.coords.longitude
-      console.log(data);
-      this.lat = data.coords.latitude;
-      this.lng = data.coords.longitude;
-    });
-  }
-
 }
