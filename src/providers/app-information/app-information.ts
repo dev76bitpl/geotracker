@@ -10,7 +10,6 @@ import { Platform } from 'ionic-angular';
 */
 @Injectable()
 export class AppInformationProvider {
-  public appTitle: any = "Job Tracking v 0.5";
   constructor(public zone: NgZone, public app: AppVersion, private platform: Platform) {
     console.log('Hello AppInformationProvider Provider');
     app.getVersionNumber().then(ver => {

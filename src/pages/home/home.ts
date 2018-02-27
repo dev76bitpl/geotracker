@@ -5,6 +5,7 @@ import { BackgroundMode } from '@ionic-native/background-mode';
 import { LocationTrackerProvider } from '../../providers/location-tracker/location-tracker';
 import { AppInformationProvider } from '../../providers/app-information/app-information';
 import { LocalNotificationProvider } from '../../providers/local-notification/local-notification';
+import { ResourceTextProvider } from '../../providers/resource-text/resource-text';
 import { AlertController } from 'ionic-angular';
 import { Storage } from '@ionic/storage';
 import { Http, Headers } from '@angular/http';
@@ -37,22 +38,13 @@ export class HomePage {
   public deviceInfo: deviceInterface = {};
   public appInfo: appVersionInterface = {};
   public jsonArray = {};
-  public intervalTime: number = 20000;
   public intervalTimeInSec: number;
   public unixTime: any;
   public dateNow: Date = (new Date);
-  public apilink = 'http://luczynski.eu/api/api.php';
-  //public apilink = 'http://work.simplicityengine.net:8086/location';
   public buttonWorkingDisabled: boolean;
   public buttonBreakDisabled: boolean = false;
   public buttonEndDisabled: boolean = false;
 
-  public jobStatus = {
-    break: "on break",
-    work: "working",
-    end: "end of day",
-    preparework: "prepare working"
-  };
   public jobStatusDb: string;
 
   public setInterval: number;
@@ -60,8 +52,8 @@ export class HomePage {
   public items: {};
   public data: any = {};
 
-  constructor(public navCtrl: NavController, private device: Device, private backgroundMode: BackgroundMode, public locationTracker: LocationTrackerProvider, public alertCtrl: AlertController, private storage: Storage, public appInformation: AppInformationProvider, public localNotification: LocalNotificationProvider, public http: Http) {
-    this.intervalTimeInSec = this.intervalTime / 1000;
+  constructor(public navCtrl: NavController, private device: Device, private backgroundMode: BackgroundMode, public locationTracker: LocationTrackerProvider, public alertCtrl: AlertController, private storage: Storage, public appInformation: AppInformationProvider, public localNotification: LocalNotificationProvider, public http: Http, public resource: ResourceTextProvider) {
+    this.intervalTimeInSec = this.resource.config.intervalTime / 1000;
     this.data.response = '';
     this.http = http;
     this.getStatusFromStorage();
@@ -74,31 +66,34 @@ export class HomePage {
 
   setButtonStatus(status) {
     switch (status) {
-      case this.jobStatus.preparework:
+      case this.resource.jobStatus.preparework:
         this.buttonWorkingDisabled = true;
+        this.buttonBreakDisabled = false;
         this.buttonEndDisabled = false;
         console.log("case 0: " + this.buttonWorkingDisabled);
         break;
-      case this.jobStatus.work:
+      case this.resource.jobStatus.work:
         this.buttonWorkingDisabled = true;
         this.buttonBreakDisabled = false;
         this.buttonEndDisabled = false;
         console.log("case 1: " + this.buttonWorkingDisabled);
         break;
-      case this.jobStatus.break:
+      case this.resource.jobStatus.break:
         this.buttonWorkingDisabled = false;
         this.buttonBreakDisabled = true;
         this.buttonEndDisabled = false;
         console.log("case 2: " + this.buttonWorkingDisabled);
         break;
-      case this.jobStatus.end:
+      case this.resource.jobStatus.end:
         this.buttonWorkingDisabled = false;
         this.buttonEndDisabled = true;
         this.buttonBreakDisabled = true;
         console.log("case 3: " + this.buttonWorkingDisabled);
         break;
       default:
-        this.buttonWorkingDisabled = false;
+        this.buttonWorkingDisabled = true;
+        this.buttonBreakDisabled = false;
+        this.buttonEndDisabled = false;
         console.log("case 0: " + this.buttonWorkingDisabled);
     }
   }
@@ -112,33 +107,33 @@ export class HomePage {
 
   }
   start() {
-    console.log(this.jobStatus.work);
-    this.saveStatusToStorage(this.jobStatus.preparework);
+    console.log(this.resource.jobStatus.work);
+    this.saveStatusToStorage(this.resource.jobStatus.preparework);
     this.getStatusFromStorage();
     this.locationTracker.startTracking();
     this.setInterval = setInterval(data => {
-      this.saveCoords(this.jobStatus.work);
-      this.saveStatusToStorage(this.jobStatus.work);
+      this.saveCoords(this.resource.jobStatus.work);
+      this.saveStatusToStorage(this.resource.jobStatus.work);
       this.getStatusFromStorage();
-    }, this.intervalTime);
+    }, this.resource.config.intervalTime);
   }
 
   break() {
-    console.log(this.jobStatus.break);
-    this.saveStatusToStorage(this.jobStatus.break);
+    console.log(this.resource.jobStatus.break);
+    this.saveStatusToStorage(this.resource.jobStatus.break);
     this.getStatusFromStorage();
     this.locationTracker.breakTracking();
     clearInterval(this.setInterval);
-    this.saveCoords(this.jobStatus.break);
+    this.saveCoords(this.resource.jobStatus.break);
   }
 
   stop() {
-    console.log(this.jobStatus.end);
-    this.saveStatusToStorage(this.jobStatus.end);
+    console.log(this.resource.jobStatus.end);
+    this.saveStatusToStorage(this.resource.jobStatus.end);
     this.getStatusFromStorage();
     this.locationTracker.stopTracking();
     clearInterval(this.setInterval);
-    this.saveCoords(this.jobStatus.end);
+    this.saveCoords(this.resource.jobStatus.end);
     this.storage.remove("coords");
     this.storage.remove("status");
     //this.storage.clear();
@@ -174,7 +169,7 @@ export class HomePage {
       var headers = new Headers();
       //headers.append('Content-Type', 'application/x-www-form-urlencoded');
       headers.append('Content-Type', 'application/json');
-      this.http.post(this.apilink, myData, {
+      this.http.post(this.resource.config.apiLinkTest, myData, {
         headers: headers
       })
         .subscribe(data => {
@@ -199,10 +194,10 @@ export class HomePage {
 
   ionViewDidLoad() {
     console.log("ionViewDidLoad");
-    this.appTitle = this.appInformation.appTitle;
     this.backgroundMode.enable();
     this.getAppInfo();
     this.getDeviceInfo();
+    this.resource;
     console.log(this.backgroundMode.isActive());
     console.log(this.backgroundMode.isEnabled());
 

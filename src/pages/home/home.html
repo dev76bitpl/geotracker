@@ -1,9 +1,13 @@
 <ion-header>
-  <ion-navbar>
-    <ion-title>{{appTitle}}</ion-title>
-  </ion-navbar>
+  <ion-toolbar color="success">
+    <ion-title>{{resource.values.title}}</ion-title>
+    <ion-buttons end>
+      <button ion-button icon-only>
+        <ion-icon name="more"></ion-icon>
+      </button>
+    </ion-buttons>
+  </ion-toolbar>
 </ion-header>
-
 <ion-content padding>
   <ion-card>
     <ion-card-header>
@@ -13,9 +17,10 @@
       <h4>{{this.jobStatusDb}}</h4>
     </ion-card-content>
   </ion-card>
-  <button ion-button (click)="start()" [disabled]="buttonWorkingDisabled">Start Tracking</button>
-  <button ion-button (click)="break()" [disabled]="buttonBreakDisabled">Break Tracking</button>
-  <button ion-button (click)="stop()" [disabled]="buttonEndDisabled">Stop Tracking</button>
+  <button ion-button (click)="start()" [disabled]="buttonWorkingDisabled">{{resource.values.startWork}}</button>
+  <button ion-button color="secondary" (click)="break()" [disabled]="buttonBreakDisabled">{{resource.values.breakWorkOn}}</button>
+  <button ion-button color="danger" (click)="stop()" [disabled]="buttonEndDisabled">{{resource.values.stopWork}}</button>
+  <!--
   <div>
 
     <ion-card>
@@ -43,6 +48,7 @@
     </p>
 
   </div>
+-->
 </ion-content>
 
 <!--

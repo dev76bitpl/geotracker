@@ -20,6 +20,7 @@ import { AppInformationProvider } from '../providers/app-information/app-informa
 import { LocalNotificationProvider } from '../providers/local-notification/local-notification';
 import { LocalNotifications } from '@ionic-native/local-notifications';
 import { HttpModule } from '@angular/http';
+import { ResourceTextProvider } from '../providers/resource-text/resource-text';
 
 @NgModule({
   declarations: [
@@ -53,6 +54,7 @@ import { HttpModule } from '@angular/http';
     Device,
     BackgroundMode,
     LocationTrackerProvider,
+    ResourceTextProvider,
     { provide: ErrorHandler, useClass: IonicErrorHandler },
     AppVersion,
     LocationTrackerProvider,
