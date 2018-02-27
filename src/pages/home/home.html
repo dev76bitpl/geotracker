@@ -7,14 +7,15 @@
 <ion-content padding>
   <ion-card>
     <ion-card-header>
-      <ion-icon name="information-circle"></ion-icon> Device info
+      JOB STATUS
     </ion-card-header>
     <ion-card-content>
-      <p>{{deviceInfo | json}}</p>
+      <h4>{{this.jobStatusDb}}</h4>
     </ion-card-content>
   </ion-card>
-  <button ion-button (click)="start()">Start Tracking</button>
-  <button ion-button (click)="stop() ">Stop Tracking and clear database</button>
+  <button ion-button (click)="start()" [disabled]="buttonWorkingDisabled">Start Tracking</button>
+  <button ion-button (click)="break()" [disabled]="buttonBreakActive">Break Tracking {{buttonBreakActive}}</button>
+  <button ion-button (click)="stop()" [disabled]="buttonEndActive">Stop Tracking</button>
   <div *ngIf="locationTracker.buttonClicked">
 
     <ion-card>

@@ -43,12 +43,17 @@ export class HomePage {
   public dateNow: Date = (new Date);
   public apilink = 'http://luczynski.eu/api/api.php';
   //public apilink = 'http://work.simplicityengine.net:8086/location';
+  public buttonWorkingDisabled: boolean;
+  public buttonBreakActive: boolean = false;
+  public buttonEndActive: boolean = false;
 
   public jobStatus = {
     break: "on break",
     work: "working",
     end: "end of day",
+    preparework: "prepare working"
   };
+  public jobStatusDb: string;
 
   public setInterval: number;
   //public items: Array<any> = [];
@@ -59,43 +64,89 @@ export class HomePage {
     this.intervalTimeInSec = this.intervalTime / 1000;
     this.data.response = '';
     this.http = http;
+    this.getStatusFromStorage();
   }
 
+  saveStatusToStorage(status) {
+    console.log("saveStatusToStorage(status): " + status);
+    this.storage.set("status", status);
+  }
+
+  getStatusFromStorage() {
+    this.storage.get('status').then((val) => {
+      this.jobStatusDb = val;
+      console.log("getStatusFromStorage(): " + this.jobStatusDb);
+
+      switch (this.jobStatusDb) {
+        case this.jobStatus.preparework:
+          this.buttonWorkingDisabled = true;
+          console.log("case 0: " + this.buttonWorkingDisabled);
+          break;
+        case this.jobStatus.work:
+          this.buttonWorkingDisabled = true;
+          console.log("case 1: " + this.buttonWorkingDisabled);
+          break;
+        case this.jobStatus.break:
+          this.buttonWorkingDisabled = true;
+          console.log("case 2: " + this.buttonWorkingDisabled);
+          break;
+        case this.jobStatus.end:
+          this.buttonWorkingDisabled = false;
+          console.log("case 3: " + this.buttonWorkingDisabled);
+          break;
+        default:
+          this.buttonWorkingDisabled = false;
+          console.log("case 0: " + this.buttonWorkingDisabled);
+      }
+    });
+
+  }
   start() {
+    console.log(this.jobStatus.work);
+    this.saveStatusToStorage(this.jobStatus.preparework);
+    this.getStatusFromStorage();
     this.locationTracker.startTracking();
     this.setInterval = setInterval(data => {
-      this.saveCoords();
+      this.saveCoords(this.jobStatus.work);
+      this.saveStatusToStorage(this.jobStatus.work);
+      this.getStatusFromStorage();
     }, this.intervalTime);
   }
 
-  pause() {
-    this.locationTracker.pauseTracking();
-    this.saveCoords();
+  break() {
+    console.log(this.jobStatus.break);
+    this.saveStatusToStorage(this.jobStatus.break);
+    this.getStatusFromStorage();
+    this.locationTracker.breakTracking();
     clearInterval(this.setInterval);
+    this.saveCoords(this.jobStatus.break);
   }
 
   stop() {
+    console.log(this.jobStatus.end);
+    this.saveStatusToStorage(this.jobStatus.end);
+    this.getStatusFromStorage();
     this.locationTracker.stopTracking();
     clearInterval(this.setInterval);
-    this.saveCoords();
-    this.storage.clear();
+    this.saveCoords(this.jobStatus.end);
+    this.storage.remove("coords");
+    this.storage.remove("status");
+    //this.storage.clear();
   }
 
-  saveCoords() {
+  saveCoords(status) {
     console.log("saveCoords()")
     this.unixTime = (new Date).getTime();
     console.log(this.storage.driver);
 
     /* create json object from functions to storage save */
-    let jsonobj = { "storage.driver": this.storage.driver, "bgmodeActive": this.backgroundMode.isActive(), "bgmodeIsEnabled": this.backgroundMode.isEnabled(), "lat": this.locationTracker.lat, "long": this.locationTracker.lng, "date": this.dateNow, "time": this.unixTime, "status": this.jobStatus.work, "imei": this.device.uuid };
+    let jsonobj = { "storage.driver": this.storage.driver, "bgmodeActive": this.backgroundMode.isActive(), "bgmodeIsEnabled": this.backgroundMode.isEnabled(), "lat": this.locationTracker.lat, "long": this.locationTracker.lng, "date": this.dateNow, "time": this.unixTime, "status": status, "imei": this.device.uuid };
 
     // add json object to storage database
     this.storage.set("coords", jsonobj);
-    this.storage.set(this.unixTime, jsonobj);
+    //this.storage.set(this.unixTime, jsonobj);
     console.log("jsonobj.lat: " + jsonobj.lat);
     console.log("jsonobj.long: " + jsonobj.long);
-    // push notification with coords
-    this.localNotification.pushNotification(jsonobj.lat, jsonobj.long);
     // get data from storage for http post to server
     this.storage.get('coords').then((val) => {
       this.items = val;
@@ -117,8 +168,13 @@ export class HomePage {
         headers: headers
       })
         .subscribe(data => {
-          this.data.response = JSON.parse(data['_body']);
+          //Api prod
+          //this.data.response = JSON.parse(data['_body']);
+          //api test
+          this.data.response = data['_body'];
           console.log("this.data.response: " + this.data.response.status);
+          // push notification with coords
+          this.localNotification.pushNotification(jsonobj.lat, jsonobj.long);
           //let access = (this.data.response.success === true);
         }, error => {
           console.log("error: " + JSON.stringify(error.json()));

@@ -41,8 +41,6 @@ export class LocationTrackerProvider {
 
     this.watch = this.geolocation.watchPosition(options).filter((p: any) => p.code === undefined).subscribe((position: Geoposition) => {
 
-      //console.log(position);
-
       // Run update inside of Angular's zone
       this.zone.run(() => {
         this.lat = position.coords.latitude;
@@ -54,14 +52,22 @@ export class LocationTrackerProvider {
     });
   }
 
-  pauseTracking() {
-
+  breakTracking() {
+    console.log("break tracking...");
+    if (this.watch === undefined) {
+      console.log("nothing to do...");
+    } else {
+      this.watch.unsubscribe();
+    }
   }
+
   stopTracking() {
     console.log("stop tracking...");
     this.buttonClicked = !this.buttonClicked;
-    this.watch.unsubscribe();
-    this.lat = 0;
-    this.lng = 0;
+    if (this.watch === undefined) {
+      console.log("nothing to do...");
+    } else {
+      this.watch.unsubscribe();
+    }
   }
 }
