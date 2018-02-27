@@ -14,9 +14,9 @@
     </ion-card-content>
   </ion-card>
   <button ion-button (click)="start()" [disabled]="buttonWorkingDisabled">Start Tracking</button>
-  <button ion-button (click)="break()" [disabled]="buttonBreakActive">Break Tracking {{buttonBreakActive}}</button>
-  <button ion-button (click)="stop()" [disabled]="buttonEndActive">Stop Tracking</button>
-  <div *ngIf="locationTracker.buttonClicked">
+  <button ion-button (click)="break()" [disabled]="buttonBreakDisabled">Break Tracking</button>
+  <button ion-button (click)="stop()" [disabled]="buttonEndDisabled">Stop Tracking</button>
+  <div>
 
     <ion-card>
       <ion-card-header>

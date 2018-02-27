@@ -44,8 +44,8 @@ export class HomePage {
   public apilink = 'http://luczynski.eu/api/api.php';
   //public apilink = 'http://work.simplicityengine.net:8086/location';
   public buttonWorkingDisabled: boolean;
-  public buttonBreakActive: boolean = false;
-  public buttonEndActive: boolean = false;
+  public buttonBreakDisabled: boolean = false;
+  public buttonEndDisabled: boolean = false;
 
   public jobStatus = {
     break: "on break",
@@ -72,32 +72,42 @@ export class HomePage {
     this.storage.set("status", status);
   }
 
+  setButtonStatus(status) {
+    switch (status) {
+      case this.jobStatus.preparework:
+        this.buttonWorkingDisabled = true;
+        this.buttonEndDisabled = false;
+        console.log("case 0: " + this.buttonWorkingDisabled);
+        break;
+      case this.jobStatus.work:
+        this.buttonWorkingDisabled = true;
+        this.buttonBreakDisabled = false;
+        this.buttonEndDisabled = false;
+        console.log("case 1: " + this.buttonWorkingDisabled);
+        break;
+      case this.jobStatus.break:
+        this.buttonWorkingDisabled = false;
+        this.buttonBreakDisabled = true;
+        this.buttonEndDisabled = false;
+        console.log("case 2: " + this.buttonWorkingDisabled);
+        break;
+      case this.jobStatus.end:
+        this.buttonWorkingDisabled = false;
+        this.buttonEndDisabled = true;
+        this.buttonBreakDisabled = true;
+        console.log("case 3: " + this.buttonWorkingDisabled);
+        break;
+      default:
+        this.buttonWorkingDisabled = false;
+        console.log("case 0: " + this.buttonWorkingDisabled);
+    }
+  }
+
   getStatusFromStorage() {
     this.storage.get('status').then((val) => {
       this.jobStatusDb = val;
+      this.setButtonStatus(this.jobStatusDb);
       console.log("getStatusFromStorage(): " + this.jobStatusDb);
-
-      switch (this.jobStatusDb) {
-        case this.jobStatus.preparework:
-          this.buttonWorkingDisabled = true;
-          console.log("case 0: " + this.buttonWorkingDisabled);
-          break;
-        case this.jobStatus.work:
-          this.buttonWorkingDisabled = true;
-          console.log("case 1: " + this.buttonWorkingDisabled);
-          break;
-        case this.jobStatus.break:
-          this.buttonWorkingDisabled = true;
-          console.log("case 2: " + this.buttonWorkingDisabled);
-          break;
-        case this.jobStatus.end:
-          this.buttonWorkingDisabled = false;
-          console.log("case 3: " + this.buttonWorkingDisabled);
-          break;
-        default:
-          this.buttonWorkingDisabled = false;
-          console.log("case 0: " + this.buttonWorkingDisabled);
-      }
     });
 
   }
