@@ -9,8 +9,16 @@ import 'rxjs/add/operator/filter';
 @Injectable()
 export class ResourceTextProvider {
 
+  public config = {
+    appversion: 0.6,
+    intervalTime: 20000,
+    apiLinkProd: 'http://work.simplicityengine.net:8086/location',
+    apiLinkTest: 'http://luczynski.eu/api/api.php',
+
+  }
+
   public values = {
-    title: "Job Tracking v 0.5",
+    title: "Job Tracking v " + this.config.appversion,
     startWork: "Push to start work",
     stopWork: "Push to stop work",
     breakWorkOn: "Click to go on break",
@@ -26,13 +34,6 @@ export class ResourceTextProvider {
     end: "end of day",
     preparework: "prepare working"
   };
-
-  public config = {
-    intervalTime: 20000,
-    apiLinkProd: 'http://work.simplicityengine.net:8086/location',
-    apiLinkTest: 'http://luczynski.eu/api/api.php',
-
-  }
 
   constructor(public zone: NgZone) {
     console.log('Hello ResourceTextProvider Provider');
