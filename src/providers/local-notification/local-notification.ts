@@ -1,5 +1,7 @@
 import { Injectable, NgZone } from '@angular/core';
 import { LocalNotifications } from '@ionic-native/local-notifications';
+import { ResourceTextProvider } from '../../providers/resource-text/resource-text';
+
 /*
   Generated class for the LocalNotificationProvider provider.
 
@@ -9,21 +11,31 @@ import { LocalNotifications } from '@ionic-native/local-notifications';
 @Injectable()
 export class LocalNotificationProvider {
 
-  constructor(public zone: NgZone, private localNotifications: LocalNotifications) {
+  constructor(public zone: NgZone, private localNotifications: LocalNotifications, public resource: ResourceTextProvider) {
     console.log('Hello LocalNotificationProvider Provider');
   }
-  pushNotification(lat, long) {
-    console.log('ionViewDidLoad About2');
+  pushNotificationSuccess(lat, long) {
+    console.log('pushNotificationSuccess()');
 
     // Schedule delayed notification
     this.localNotifications.schedule({
-      title: 'Geotracker: Your current position',
+      title: this.resource.values.notificationSuccessTitle,
       text: "lat: " + lat + " long: " + long,
       //at: new Date(new Date().getTime() + 3600),
       led: 'FF0000',
       sound: null
     });
+  }
 
-
+  pushNotificationFail() {
+    console.log('pushNotificationFail()');
+    // Schedule delayed notification
+    this.localNotifications.schedule({
+      title: this.resource.values.notificationFailTitle,
+      text: this.resource.values.notificationFailText,
+      //at: new Date(new Date().getTime() + 3600),
+      led: 'FF0000',
+      sound: null
+    });
   }
 }

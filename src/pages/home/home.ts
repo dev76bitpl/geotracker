@@ -40,6 +40,7 @@ export class HomePage {
   public jsonArray = {};
   public intervalTimeInSec: number;
   public unixTime: any;
+  public date: any;
   public dateNow: Date = (new Date);
   public buttonWorkingDisabled: boolean;
   public buttonBreakDisabled: boolean = false;
@@ -91,9 +92,9 @@ export class HomePage {
         console.log("case 3: " + this.buttonWorkingDisabled);
         break;
       default:
-        this.buttonWorkingDisabled = true;
-        this.buttonBreakDisabled = false;
-        this.buttonEndDisabled = false;
+        this.buttonWorkingDisabled = false;
+        this.buttonBreakDisabled = true;
+        this.buttonEndDisabled = true;
         console.log("case 0: " + this.buttonWorkingDisabled);
     }
   }
@@ -141,7 +142,8 @@ export class HomePage {
 
   saveCoords(status) {
     console.log("saveCoords()")
-    this.unixTime = (new Date).getTime();
+    this.unixTime = Date.now() / 1000 | 0;
+    this.date = (new Date);
     console.log(this.storage.driver);
 
     /* create json object from functions to storage save */
@@ -150,8 +152,8 @@ export class HomePage {
     // add json object to storage database
     this.storage.set("coords", jsonobj);
     //this.storage.set(this.unixTime, jsonobj);
-    console.log("jsonobj.lat: " + jsonobj.lat);
-    console.log("jsonobj.long: " + jsonobj.long);
+    //console.log("jsonobj.lat: " + jsonobj.lat);
+    //console.log("jsonobj.long: " + jsonobj.long);
     // get data from storage for http post to server
     this.storage.get('coords').then((val) => {
       this.items = val;
@@ -169,18 +171,29 @@ export class HomePage {
       var headers = new Headers();
       //headers.append('Content-Type', 'application/x-www-form-urlencoded');
       headers.append('Content-Type', 'application/json');
-      this.http.post(this.resource.config.apiLinkTest, myData, {
+      this.http.post(this.resource.config.apiLinkProd, myData, {
         headers: headers
       })
         .subscribe(data => {
           //Api prod
-          //this.data.response = JSON.parse(data['_body']);
+          this.data.response = JSON.parse(data['_body']);
           //api test
-          this.data.response = data['_body'];
+          //this.data.response = data['_body'];
+
           console.log("this.data.response: " + this.data.response.status);
-          // push notification with coords
-          this.localNotification.pushNotification(jsonobj.lat, jsonobj.long);
-          //let access = (this.data.response.success === true);
+          console.log("val.imei: " + val.imei);
+          console.log("this.unixTime: " + this.unixTime);
+          console.log("this.date: " + this.date);
+          console.log("this.unixtime2date: " + this.unixtime2date(this.unixTime));
+          let access = (this.data.response.status === "SUCCESS");
+          if (access) {
+            // push notification with coords
+            this.localNotification.pushNotificationSuccess(val.lat, val.long);
+            console.log("success");
+          } else {
+            this.localNotification.pushNotificationFail();
+            console.log("fail");
+          }
         }, error => {
           console.log("error: " + JSON.stringify(error.json()));
         });
@@ -220,5 +233,27 @@ export class HomePage {
     this.deviceInfo.isVirtual = this.device.isVirtual;
     console.log("this.deviceInfo");
     console.log(this.deviceInfo);
+  }
+
+  public round(n, k) {
+    var factor = Math.pow(10, k + 1);
+    n = Math.round(Math.round(n * factor) / 10);
+    return n / (factor / 10);
+  }
+
+  public unixtime2date(unixtimestamp) {
+    // Create a new JavaScript Date object based on the timestamp
+    // multiplied by 1000 so that the argument is in milliseconds, not seconds.
+    var date = new Date(unixtimestamp * 1000);
+    // Hours part from the timestamp
+    var hours = date.getHours();
+    // Minutes part from the timestamp
+    var minutes = "0" + date.getMinutes();
+    // Seconds part from the timestamp
+    var seconds = "0" + date.getSeconds();
+
+    // Will display time in 10:30:23 format
+    var formattedTime = hours + ':' + minutes.substr(-2) + ':' + seconds.substr(-2);
+    return formattedTime;
   }
 }

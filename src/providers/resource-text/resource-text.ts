@@ -10,10 +10,11 @@ import 'rxjs/add/operator/filter';
 export class ResourceTextProvider {
 
   public config = {
-    appversion: 0.6,
+    appversion: 0.7,
     intervalTime: 20000,
     apiLinkProd: 'http://work.simplicityengine.net:8086/location',
     apiLinkTest: 'http://luczynski.eu/api/api.php',
+    apiLinkTest2: "http://localhost:9000",
 
   }
 
@@ -26,6 +27,9 @@ export class ResourceTextProvider {
     ledStart: "Working",
     ledBreak: "On break",
     ledStop: "Stopped",
+    notificationSuccessTitle: "Geotracker: Your current position",
+    notificationFailTitle: "Geotracker: Error",
+    notificationFailText: "Problem with geotracker server"
   }
 
   public jobStatus = {
