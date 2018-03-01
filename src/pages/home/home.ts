@@ -45,13 +45,11 @@ export class HomePage {
   public buttonWorkingDisabled: boolean;
   public buttonBreakDisabled: boolean = false;
   public buttonEndDisabled: boolean = false;
-
   public jobStatusDb: string;
-
   public setInterval: number;
-  //public items: Array<any> = [];
   public items: {};
   public data: any = {};
+  private toolbarColor: string;
 
   constructor(public navCtrl: NavController, private device: Device, private backgroundMode: BackgroundMode, public locationTracker: LocationTrackerProvider, public alertCtrl: AlertController, private storage: Storage, public appInformation: AppInformationProvider, public localNotification: LocalNotificationProvider, public http: Http, public resource: ResourceTextProvider) {
     this.intervalTimeInSec = this.resource.config.intervalTime / 1000;
@@ -69,8 +67,8 @@ export class HomePage {
     switch (status) {
       case this.resource.jobStatus.preparework:
         this.buttonWorkingDisabled = true;
-        this.buttonBreakDisabled = false;
-        this.buttonEndDisabled = false;
+        this.buttonBreakDisabled = true;
+        this.buttonEndDisabled = true;
         console.log("case 0: " + this.buttonWorkingDisabled);
         break;
       case this.resource.jobStatus.work:
@@ -117,6 +115,7 @@ export class HomePage {
       this.saveStatusToStorage(this.resource.jobStatus.work);
       this.getStatusFromStorage();
     }, this.resource.config.intervalTime);
+    this.toolbarColor = 'secondary';
   }
 
   break() {
@@ -126,6 +125,7 @@ export class HomePage {
     this.locationTracker.breakTracking();
     clearInterval(this.setInterval);
     this.saveCoords(this.resource.jobStatus.break);
+    this.toolbarColor = 'primary';
   }
 
   stop() {
@@ -138,6 +138,7 @@ export class HomePage {
     this.storage.remove("coords");
     this.storage.remove("status");
     //this.storage.clear();
+    this.toolbarColor = 'danger';
   }
 
   saveCoords(status) {
@@ -147,11 +148,11 @@ export class HomePage {
     console.log(this.storage.driver);
 
     /* create json object from functions to storage save */
-    let jsonobj = { "storage.driver": this.storage.driver, "bgmodeActive": this.backgroundMode.isActive(), "bgmodeIsEnabled": this.backgroundMode.isEnabled(), "lat": this.locationTracker.lat, "long": this.locationTracker.lng, "date": this.dateNow, "time": this.unixTime, "status": status, "imei": this.device.uuid };
+    let jsonobj = { "date": this.dateNow, "lat": this.locationTracker.lat, "long": this.locationTracker.lng, "status": status, "storage.driver": this.storage.driver, "bgmodeActive": this.backgroundMode.isActive(), "bgmodeIsEnabled": this.backgroundMode.isEnabled(), "time": this.unixTime, "imei": this.device.uuid };
 
     // add json object to storage database
     this.storage.set("coords", jsonobj);
-    //this.storage.set(this.unixTime, jsonobj);
+    this.storage.set("log-" + this.unixTime, jsonobj);
     //console.log("jsonobj.lat: " + jsonobj.lat);
     //console.log("jsonobj.long: " + jsonobj.long);
     // get data from storage for http post to server
@@ -166,41 +167,44 @@ export class HomePage {
         status: val.status
       });
 
-      //if (val.lat > 0 && val.long > 0 && val.imei != null) {
-      // send data to server
-      var headers = new Headers();
-      //headers.append('Content-Type', 'application/x-www-form-urlencoded');
-      headers.append('Content-Type', 'application/json');
-      this.http.post(this.resource.config.apiLinkProd, myData, {
-        headers: headers
-      })
-        .subscribe(data => {
-          //Api prod
-          this.data.response = JSON.parse(data['_body']);
-          //api test
-          //this.data.response = data['_body'];
+      if (val.lat > 0 && val.long > 0) {
+        //if (val.lat > 0 && val.long > 0 && val.imei != null) {
+        // send data to server
+        var headers = new Headers();
+        //headers.append('Content-Type', 'application/x-www-form-urlencoded');
+        headers.append('Content-Type', 'application/json');
+        this.http.post(this.resource.config.apiLinkProd, myData, {
+          headers: headers
+        })
+          .subscribe(data => {
+            //Api prod
+            this.data.response = JSON.parse(data['_body']);
+            //api test
+            //this.data.response = data['_body'];
 
-          console.log("this.data.response: " + this.data.response.status);
-          console.log("val.imei: " + val.imei);
-          console.log("this.unixTime: " + this.unixTime);
-          console.log("this.date: " + this.date);
-          console.log("this.unixtime2date: " + this.unixtime2date(this.unixTime));
-          let access = (this.data.response.status === "SUCCESS");
-          if (access) {
-            // push notification with coords
-            this.localNotification.pushNotificationSuccess(val.lat, val.long);
-            console.log("success");
-          } else {
-            this.localNotification.pushNotificationFail();
-            console.log("fail");
-          }
-        }, error => {
-          console.log("error: " + JSON.stringify(error.json()));
-        });
+            console.log("this.data.response: " + this.data.response.status);
+            console.log("val.imei: " + val.imei);
+            console.log("this.unixTime: " + this.unixTime);
+            console.log("this.date: " + this.date);
+            console.log("this.unixtime2date: " + this.unixtime2date(this.unixTime));
+            let access = (this.data.response.status === "SUCCESS");
+            if (access) {
+              // push notification with coords
+              this.localNotification.pushNotificationSuccess(val.lat, val.long);
+              console.log("success");
+            } else {
+              // dodac zapisywanie rekordu do bazy w celu pozniejszej wysylki
+              this.storage.set("fail-" + this.unixTime, jsonobj);
+              this.localNotification.pushNotificationFail();
+              console.log("fail");
+            }
+          }, error => {
+            console.log("error: " + JSON.stringify(error.json()));
+          });
+      }
     });
-
     /*this.storage.forEach((value, key, index) => {
-      console.log(value.lat);
+      console.log(value);
       this.items = value;
     })*/
   }

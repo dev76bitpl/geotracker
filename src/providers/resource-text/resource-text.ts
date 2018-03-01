@@ -10,7 +10,7 @@ import 'rxjs/add/operator/filter';
 export class ResourceTextProvider {
 
   public config = {
-    appversion: 0.7,
+    appversion: 0.75,
     intervalTime: 20000,
     apiLinkProd: 'http://work.simplicityengine.net:8086/location',
     apiLinkTest: 'http://luczynski.eu/api/api.php',
@@ -36,7 +36,7 @@ export class ResourceTextProvider {
     break: "on break",
     work: "working",
     end: "end of day",
-    preparework: "prepare working"
+    preparework: "prepare working... Checking for stable GPS signal..."
   };
 
   constructor(public zone: NgZone) {

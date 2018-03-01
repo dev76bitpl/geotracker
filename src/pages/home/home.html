@@ -1,5 +1,5 @@
 <ion-header>
-  <ion-toolbar color="success">
+  <ion-toolbar [color]="toolbarColor">
     <ion-title>{{resource.values.title}}</ion-title>
     <ion-buttons end>
       <button ion-button icon-only>
@@ -17,12 +17,14 @@
       <h4>{{this.jobStatusDb}}</h4>
     </ion-card-content>
   </ion-card>
-  <button ion-button (click)="start()" [disabled]="buttonWorkingDisabled">{{resource.values.startWork}}</button>
-  <button ion-button color="secondary" (click)="break()" [disabled]="buttonBreakDisabled">{{resource.values.breakWorkOn}}</button>
+  <button ion-button color="secondary" (click)="start()" [disabled]="buttonWorkingDisabled">{{resource.values.startWork}}</button>
+  <button ion-button color="primary" (click)="break()" [disabled]="buttonBreakDisabled">{{resource.values.breakWorkOn}}</button>
   <button ion-button color="danger" (click)="stop()" [disabled]="buttonEndDisabled">{{resource.values.stopWork}}</button>
-  <!--
-  <div>
 
+  <div>
+    <pre>
+    {{this.items2|json}}
+  </pre>
     <ion-card>
       <ion-card-header>
         LOCATION FROM DEVICE
@@ -48,7 +50,6 @@
     </p>
 
   </div>
--->
 </ion-content>
 
 <!--
