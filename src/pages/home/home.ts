@@ -112,7 +112,8 @@ export class HomePage {
     this.locationTracker.startTracking();
     this.setInterval = setInterval(data => {
       this.saveCoords(this.resource.jobStatus.work);
-      this.saveStatusToStorage(this.resource.jobStatus.work);
+      this.saveCoordsTest(this.resource.jobStatus.work);
+      //this.saveStatusToStorage(this.resource.jobStatus.work);
       this.getStatusFromStorage();
     }, this.resource.config.intervalTime);
     this.toolbarColor = 'secondary';
@@ -124,7 +125,8 @@ export class HomePage {
     this.getStatusFromStorage();
     this.locationTracker.breakTracking();
     clearInterval(this.setInterval);
-    this.saveCoords(this.resource.jobStatus.break);
+    //this.saveCoords(this.resource.jobStatus.break);
+    this.saveCoordsTest(this.resource.jobStatus.break);
     this.toolbarColor = 'primary';
   }
 
@@ -134,11 +136,41 @@ export class HomePage {
     this.getStatusFromStorage();
     this.locationTracker.stopTracking();
     clearInterval(this.setInterval);
-    this.saveCoords(this.resource.jobStatus.end);
+    //this.saveCoords(this.resource.jobStatus.end);
+    this.saveCoordsTest(this.resource.jobStatus.end);
     this.storage.remove("coords");
     this.storage.remove("status");
     //this.storage.clear();
     this.toolbarColor = 'danger';
+  }
+
+
+  saveCoordsTest(status) {
+    console.log("saveCoords()")
+    this.unixTime = Date.now() / 1000 | 0;
+    this.date = (new Date);
+    console.log(this.storage.driver);
+
+    /* create json object from functions to storage save */
+    let jsonobj = { "date": this.dateNow, "lat": this.locationTracker.lat, "long": this.locationTracker.lng, "status": status, "storage.driver": this.storage.driver, "bgmodeActive": this.backgroundMode.isActive(), "bgmodeIsEnabled": this.backgroundMode.isEnabled(), "time": this.unixTime, "imei": this.device.uuid };
+
+    var myData = JSON.stringify(jsonobj);
+
+    if (jsonobj.lat > 0 && jsonobj.long > 0) {
+      // send data to server
+      var headers = new Headers();
+      headers.append('Content-Type', 'application/json');
+      //headers.append('Content-Type', 'text/csv');
+      this.http.post(this.resource.config.apiLinkTest, myData, {
+        headers: headers
+      })
+        .subscribe(data => {
+          this.data.response = data['_body'];
+          console.log("this.data.response: " + this.data.response);
+        }, error => {
+          console.log("error: " + JSON.stringify(error.json()));
+        });
+    }
   }
 
   saveCoords(status) {
@@ -168,7 +200,6 @@ export class HomePage {
       });
 
       if (val.lat > 0 && val.long > 0) {
-        //if (val.lat > 0 && val.long > 0 && val.imei != null) {
         // send data to server
         var headers = new Headers();
         //headers.append('Content-Type', 'application/x-www-form-urlencoded');
