@@ -68,7 +68,7 @@ export class HomePage {
       case this.resource.jobStatus.preparework:
         this.buttonWorkingDisabled = true;
         this.buttonBreakDisabled = true;
-        this.buttonEndDisabled = true;
+        this.buttonEndDisabled = false;
         console.log("case 0: " + this.buttonWorkingDisabled);
         break;
       case this.resource.jobStatus.work:
@@ -111,9 +111,9 @@ export class HomePage {
     this.getStatusFromStorage();
     this.locationTracker.startTracking();
     this.setInterval = setInterval(data => {
-      this.saveCoords(this.resource.jobStatus.work);
+      //this.saveCoords(this.resource.jobStatus.work);
       this.saveCoordsTest(this.resource.jobStatus.work);
-      //this.saveStatusToStorage(this.resource.jobStatus.work);
+      this.saveStatusToStorage(this.resource.jobStatus.work);
       this.getStatusFromStorage();
     }, this.resource.config.intervalTime);
     this.toolbarColor = 'secondary';
@@ -154,6 +154,10 @@ export class HomePage {
     /* create json object from functions to storage save */
     let jsonobj = { "date": this.dateNow, "lat": this.locationTracker.lat, "long": this.locationTracker.lng, "status": status, "storage.driver": this.storage.driver, "bgmodeActive": this.backgroundMode.isActive(), "bgmodeIsEnabled": this.backgroundMode.isEnabled(), "time": this.unixTime, "imei": this.device.uuid };
 
+    // add json object to storage database
+    this.storage.set("coords", jsonobj);
+    //this.storage.set("log-" + this.unixTime, jsonobj);
+
     var myData = JSON.stringify(jsonobj);
 
     if (jsonobj.lat > 0 && jsonobj.long > 0) {
@@ -161,12 +165,26 @@ export class HomePage {
       var headers = new Headers();
       headers.append('Content-Type', 'application/json');
       //headers.append('Content-Type', 'text/csv');
-      this.http.post(this.resource.config.apiLinkTest, myData, {
+      this.http.post(this.resource.config.apiLinkTest + "?imei=" + jsonobj.imei, myData, {
         headers: headers
       })
         .subscribe(data => {
           this.data.response = data['_body'];
-          console.log("this.data.response: " + this.data.response);
+          console.log(this.data.response);
+
+          /*let access = (this.data.response.status === "SUCCESS");
+          if (access) {
+            // push notification with coords
+            this.localNotification.pushNotificationSuccess(jsonobj.lat, jsonobj.long);
+            console.log("success");
+          } else {
+            // dodac zapisywanie rekordu do bazy w celu pozniejszej wysylki
+            this.storage.set("fail-" + this.unixTime, jsonobj);
+            this.localNotification.pushNotificationFail();
+            console.log("fail");
+        }*/
+
+
         }, error => {
           console.log("error: " + JSON.stringify(error.json()));
         });
