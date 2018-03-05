@@ -1,6 +1,7 @@
 import { Injectable, NgZone } from '@angular/core';
 import { Geolocation, Geoposition } from '@ionic-native/geolocation';
 import 'rxjs/add/operator/filter';
+import { BackgroundMode } from '@ionic-native/background-mode';
 
 /*
 The JSON keys we are using are location, time, imei and status
@@ -25,10 +26,16 @@ export class LocationTrackerProvider {
   public googleMapsUrl: string;
   public buttonClicked: boolean = false;
   public position: any;
+  public bmIsActive: boolean;
+  public bmIsEnabled: boolean;
 
-  constructor(public zone: NgZone, public geolocation: Geolocation) {
+  constructor(public zone: NgZone, public geolocation: Geolocation, private backgroundMode: BackgroundMode) {
     console.log('Hello LocationTrackerProvider Provider');
-    this.googleMapsUrl = "https://www.google.com/maps/search/?api=1&query=";
+    // cordova.plugins.backgroundMode is now available
+    //this.bmIsActive = backgroundMode.isActive();
+    //this.bmIsEnabled = backgroundMode.isEnabled();
+    //console.log(this.bmIsActive);
+    //console.log(this.bmIsEnabled);
   }
 
   startTracking() {
@@ -49,6 +56,9 @@ export class LocationTrackerProvider {
         console.log("this.zone.run");
         console.log("this.lat: " + this.lat + " | this.lng: " + this.lng);
       });
+      this.backgroundMode.enable();
+      console.log(this.bmIsActive);
+      console.log(this.bmIsEnabled);
     });
   }
 
@@ -59,6 +69,9 @@ export class LocationTrackerProvider {
     } else {
       this.watch.unsubscribe();
     }
+    console.log(this.bmIsActive);
+    console.log(this.bmIsEnabled);
+    //this.backgroundMode.disable();
   }
 
   stopTracking() {
@@ -69,5 +82,8 @@ export class LocationTrackerProvider {
     } else {
       this.watch.unsubscribe();
     }
+    console.log(this.bmIsActive);
+    console.log(this.bmIsEnabled);
+    //this.backgroundMode.disable();
   }
 }

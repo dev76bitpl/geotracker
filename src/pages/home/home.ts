@@ -1,7 +1,6 @@
 import { Component } from '@angular/core';
 import { NavController } from 'ionic-angular';
 import { Device } from '@ionic-native/device';
-import { BackgroundMode } from '@ionic-native/background-mode';
 import { LocationTrackerProvider } from '../../providers/location-tracker/location-tracker';
 import { AppInformationProvider } from '../../providers/app-information/app-information';
 import { LocalNotificationProvider } from '../../providers/local-notification/local-notification';
@@ -9,6 +8,7 @@ import { ResourceTextProvider } from '../../providers/resource-text/resource-tex
 import { AlertController } from 'ionic-angular';
 import { Storage } from '@ionic/storage';
 import { Http, Headers } from '@angular/http';
+import { Platform } from 'ionic-angular';
 
 interface deviceInterface {
   id?: string,
@@ -51,11 +51,19 @@ export class HomePage {
   public data: any = {};
   private toolbarColor: string;
 
-  constructor(public navCtrl: NavController, private device: Device, private backgroundMode: BackgroundMode, public locationTracker: LocationTrackerProvider, public alertCtrl: AlertController, private storage: Storage, public appInformation: AppInformationProvider, public localNotification: LocalNotificationProvider, public http: Http, public resource: ResourceTextProvider) {
+  constructor(public navCtrl: NavController, private device: Device, public locationTracker: LocationTrackerProvider, public alertCtrl: AlertController, private storage: Storage, public appInformation: AppInformationProvider, public localNotification: LocalNotificationProvider, public http: Http, public resource: ResourceTextProvider, private platform: Platform) {
     this.intervalTimeInSec = this.resource.config.intervalTime / 1000;
     this.data.response = '';
     this.http = http;
-    this.getStatusFromStorage();
+
+    platform.ready().then(() => {
+      console.log("platform.ready()" + platform.version());
+      console.log("ionViewDidLoad");
+      this.getStatusFromStorage();
+      this.getAppInfo();
+      this.getDeviceInfo();
+      this.resource;
+    });
   }
 
   saveStatusToStorage(status) {
@@ -69,24 +77,28 @@ export class HomePage {
         this.buttonWorkingDisabled = true;
         this.buttonBreakDisabled = true;
         this.buttonEndDisabled = false;
+        this.toolbarColor = 'warning';
         console.log("case 0: " + this.buttonWorkingDisabled);
         break;
       case this.resource.jobStatus.work:
         this.buttonWorkingDisabled = true;
         this.buttonBreakDisabled = false;
         this.buttonEndDisabled = false;
+        this.toolbarColor = 'secondary';
         console.log("case 1: " + this.buttonWorkingDisabled);
         break;
       case this.resource.jobStatus.break:
         this.buttonWorkingDisabled = false;
         this.buttonBreakDisabled = true;
         this.buttonEndDisabled = false;
+        this.toolbarColor = 'primary';
         console.log("case 2: " + this.buttonWorkingDisabled);
         break;
       case this.resource.jobStatus.end:
         this.buttonWorkingDisabled = false;
         this.buttonEndDisabled = true;
         this.buttonBreakDisabled = true;
+        this.toolbarColor = 'danger';
         console.log("case 3: " + this.buttonWorkingDisabled);
         break;
       default:
@@ -98,50 +110,53 @@ export class HomePage {
   }
 
   getStatusFromStorage() {
+    console.log("getStatusFromStorage() - start");
     this.storage.get('status').then((val) => {
       this.jobStatusDb = val;
       this.setButtonStatus(this.jobStatusDb);
       console.log("getStatusFromStorage(): " + this.jobStatusDb);
     });
-
+    console.log("getStatusFromStorage() - stop");
   }
   start() {
+    console.log("start()");
     console.log(this.resource.jobStatus.work);
     this.saveStatusToStorage(this.resource.jobStatus.preparework);
     this.getStatusFromStorage();
     this.locationTracker.startTracking();
     this.setInterval = setInterval(data => {
-      //this.saveCoords(this.resource.jobStatus.work);
-      this.saveCoordsTest(this.resource.jobStatus.work);
+      this.saveCoords(this.resource.jobStatus.work);
+      //this.saveCoordsTest(this.resource.jobStatus.work);
       this.saveStatusToStorage(this.resource.jobStatus.work);
+      console.log("test przed this.getStatusFromStorage()");
       this.getStatusFromStorage();
     }, this.resource.config.intervalTime);
-    this.toolbarColor = 'secondary';
+    //this.toolbarColor = 'secondary';
   }
 
   break() {
+    console.log("break()");
     console.log(this.resource.jobStatus.break);
     this.saveStatusToStorage(this.resource.jobStatus.break);
-    this.getStatusFromStorage();
     this.locationTracker.breakTracking();
+    this.getStatusFromStorage();
     clearInterval(this.setInterval);
-    //this.saveCoords(this.resource.jobStatus.break);
-    this.saveCoordsTest(this.resource.jobStatus.break);
-    this.toolbarColor = 'primary';
+    this.saveCoords(this.resource.jobStatus.break);
+    //this.saveCoordsTest(this.resource.jobStatus.break);
   }
 
   stop() {
+    console.log("stop()");
     console.log(this.resource.jobStatus.end);
     this.saveStatusToStorage(this.resource.jobStatus.end);
-    this.getStatusFromStorage();
     this.locationTracker.stopTracking();
     clearInterval(this.setInterval);
-    //this.saveCoords(this.resource.jobStatus.end);
-    this.saveCoordsTest(this.resource.jobStatus.end);
+    this.getStatusFromStorage();
+    this.saveCoords(this.resource.jobStatus.end);
+    //this.saveCoordsTest(this.resource.jobStatus.end);
     this.storage.remove("coords");
     this.storage.remove("status");
     //this.storage.clear();
-    this.toolbarColor = 'danger';
   }
 
 
@@ -152,12 +167,14 @@ export class HomePage {
     console.log(this.storage.driver);
 
     /* create json object from functions to storage save */
-    let jsonobj = { "date": this.dateNow, "lat": this.locationTracker.lat, "long": this.locationTracker.lng, "status": status, "storage.driver": this.storage.driver, "bgmodeActive": this.backgroundMode.isActive(), "bgmodeIsEnabled": this.backgroundMode.isEnabled(), "time": this.unixTime, "imei": this.device.uuid };
+    let jsonobj = { "date": (new Date), "lat": this.locationTracker.lat, "long": this.locationTracker.lng, "status": status, "storage.driver": this.storage.driver, "bgmodeActive": this.locationTracker.bmIsActive, "bgmodeIsEnabled": this.locationTracker.bmIsEnabled, "time": this.unixTime, "imei": this.device.uuid };
 
     // add json object to storage database
     this.storage.set("coords", jsonobj);
     //this.storage.set("log-" + this.unixTime, jsonobj);
-
+    this.storage.get('coords').then((val) => {
+      this.items = val;
+    });
     var myData = JSON.stringify(jsonobj);
 
     if (jsonobj.lat > 0 && jsonobj.long > 0) {
@@ -171,7 +188,7 @@ export class HomePage {
         .subscribe(data => {
           this.data.response = data['_body'];
           console.log(this.data.response);
-
+          this.localNotification.pushNotificationSuccess(jsonobj.lat, jsonobj.long);
           /*let access = (this.data.response.status === "SUCCESS");
           if (access) {
             // push notification with coords
@@ -198,7 +215,7 @@ export class HomePage {
     console.log(this.storage.driver);
 
     /* create json object from functions to storage save */
-    let jsonobj = { "date": this.dateNow, "lat": this.locationTracker.lat, "long": this.locationTracker.lng, "status": status, "storage.driver": this.storage.driver, "bgmodeActive": this.backgroundMode.isActive(), "bgmodeIsEnabled": this.backgroundMode.isEnabled(), "time": this.unixTime, "imei": this.device.uuid };
+    let jsonobj = { "date": this.dateNow, "lat": this.locationTracker.lat, "long": this.locationTracker.lng, "status": status, "storage.driver": this.storage.driver, "bgmodeActive": this.locationTracker.bmIsActive, "bgmodeIsEnabled": this.locationTracker.bmIsEnabled, "time": this.unixTime, "imei": this.device.uuid };
 
     // add json object to storage database
     this.storage.set("coords", jsonobj);
@@ -260,13 +277,20 @@ export class HomePage {
 
   ionViewDidLoad() {
     console.log("ionViewDidLoad");
-    this.backgroundMode.enable();
+    this.getStatusFromStorage();
     this.getAppInfo();
     this.getDeviceInfo();
     this.resource;
-    console.log(this.backgroundMode.isActive());
-    console.log(this.backgroundMode.isEnabled());
+  }
+  ionViewWillEnter() {
+    console.log('Runs when the page is about to enter and become the active page.');
+  }
+  onPageWillEnter() {
+    console.log("you enter the view");
+  }
 
+  onPageWillLeave() {
+    console.log("you leave the view");
   }
 
   public getAppInfo() {

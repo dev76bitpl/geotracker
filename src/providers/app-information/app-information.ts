@@ -1,7 +1,7 @@
 import { Injectable, NgZone } from '@angular/core';
 import 'rxjs/add/operator/filter';
 import { AppVersion } from '@ionic-native/app-version';
-import { Platform } from 'ionic-angular';
+//import { Platform } from 'ionic-angular';
 /*
   Generated class for the AppInformationProvider provider.
 
@@ -10,7 +10,7 @@ import { Platform } from 'ionic-angular';
 */
 @Injectable()
 export class AppInformationProvider {
-  constructor(public zone: NgZone, public app: AppVersion, private platform: Platform) {
+  constructor(public zone: NgZone, public app: AppVersion) {
     console.log('Hello AppInformationProvider Provider');
     app.getVersionNumber().then(ver => {
       this.app = ver;
