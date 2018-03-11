@@ -61,6 +61,7 @@ import { ResourceTextProvider } from '../providers/resource-text/resource-text';
     AppInformationProvider,
     LocalNotificationProvider,
     LocalNotifications,
+
   ]
 })
 export class AppModule { }

@@ -1,6 +1,7 @@
 import { Injectable, NgZone } from '@angular/core';
 import 'rxjs/add/operator/filter';
 import { AppVersion } from '@ionic-native/app-version';
+
 //import { Platform } from 'ionic-angular';
 /*
   Generated class for the AppInformationProvider provider.
@@ -19,6 +20,7 @@ export class AppInformationProvider {
       console.log(error);
     });
   }
+
   /*async getAppName() {
     const appName = await this.app.getAppName();
     console.log(appName);

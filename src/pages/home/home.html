@@ -17,10 +17,19 @@
       <h4>{{this.jobStatusDb}}</h4>
     </ion-card-content>
   </ion-card>
+  <ion-card>
+    <ion-card-header>
+      Response
+    </ion-card-header>
+
+    <ion-card-content>
+      <b>{{data.response}}</b>
+    </ion-card-content>
+  </ion-card>
   <button ion-button color="secondary" (click)="start()" [disabled]="buttonWorkingDisabled">{{resource.values.startWork}}</button>
   <button ion-button color="primary" (click)="break()" [disabled]="buttonBreakDisabled">{{resource.values.breakWorkOn}}</button>
   <button ion-button color="danger" (click)="stop()" [disabled]="buttonEndDisabled">{{resource.values.stopWork}}</button>
-
+  <button ion-button color="primary" (click)="submit()">send to server</button>
   <div>
     <ion-card>
       <ion-card-header>
@@ -43,7 +52,7 @@
       </ion-card-content>
     </ion-card>
     <p>
-      <a href="{{locationTracker.googleMapsUrl}}{{locationTracker.lat}},{{locationTracker.lng}}">check this coordinate on google maps</a>
+      <a href="{{resource.config.googleMapsUrl}}{{locationTracker.lat}},{{locationTracker.lng}}">check this coordinate on google maps</a>
     </p>
 
   </div>

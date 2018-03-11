@@ -125,8 +125,8 @@ export class HomePage {
     this.getStatusFromStorage();
     this.locationTracker.startTracking();
     this.setInterval = setInterval(data => {
-      this.saveCoords(this.resource.jobStatus.work);
-      //this.saveCoordsTest(this.resource.jobStatus.work);
+      //this.saveCoords(this.resource.jobStatus.work);
+      this.saveCoordsTest(this.resource.jobStatus.work);
       this.saveStatusToStorage(this.resource.jobStatus.work);
       console.log("test przed this.getStatusFromStorage()");
       this.getStatusFromStorage();
@@ -141,8 +141,8 @@ export class HomePage {
     this.locationTracker.breakTracking();
     this.getStatusFromStorage();
     clearInterval(this.setInterval);
-    this.saveCoords(this.resource.jobStatus.break);
-    //this.saveCoordsTest(this.resource.jobStatus.break);
+    //this.saveCoords(this.resource.jobStatus.break);
+    this.saveCoordsTest(this.resource.jobStatus.break);
   }
 
   stop() {
@@ -152,8 +152,8 @@ export class HomePage {
     this.locationTracker.stopTracking();
     clearInterval(this.setInterval);
     this.getStatusFromStorage();
-    this.saveCoords(this.resource.jobStatus.end);
-    //this.saveCoordsTest(this.resource.jobStatus.end);
+    //this.saveCoords(this.resource.jobStatus.end);
+    this.saveCoordsTest(this.resource.jobStatus.end);
     this.storage.remove("coords");
     this.storage.remove("status");
     //this.storage.clear();
@@ -208,6 +208,40 @@ export class HomePage {
     }
   }
 
+  submit() {
+    console.log("submit()")
+    this.unixTime = Date.now() / 1000 | 0;
+    this.date = (new Date);
+    console.log(this.storage.driver);
+
+    /* create json object from functions to storage save */
+    let jsonobj = { "date": (new Date), "lat": this.locationTracker.lat, "long": this.locationTracker.lng, "status": "working", "storage.driver": this.storage.driver, "bgmodeActive": this.locationTracker.bmIsActive, "bgmodeIsEnabled": this.locationTracker.bmIsEnabled, "time": this.unixTime, "imei": this.device.uuid };
+
+    // add json object to storage database
+    this.storage.set("coords", jsonobj);
+    //this.storage.set("log-" + this.unixTime, jsonobj);
+    this.storage.get('coords').then((val) => {
+      this.items = val;
+    });
+    var myData = JSON.stringify(jsonobj);
+
+    if (jsonobj.lat > 0 && jsonobj.long > 0) {
+      // send data to server
+      var headers = new Headers();
+      headers.append('Content-Type', 'application/json');
+      //headers.append('Content-Type', 'text/csv');
+      this.http.post(this.resource.config.apiLinkTest + "?imei=" + jsonobj.imei, myData, {
+        headers: headers
+      })
+        .subscribe(data => {
+          this.data.response = data['_body'];
+          console.log(this.data.response);
+          this.localNotification.pushNotificationSuccess(jsonobj.lat, jsonobj.long);
+        }, error => {
+          console.log("error: " + JSON.stringify(error.json()));
+        });
+    }
+  }
   saveCoords(status) {
     console.log("saveCoords()")
     this.unixTime = Date.now() / 1000 | 0;
