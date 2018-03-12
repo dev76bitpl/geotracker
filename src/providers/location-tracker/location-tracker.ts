@@ -32,7 +32,6 @@ export class LocationTrackerProvider {
   constructor(public zone: NgZone, public geolocation: Geolocation, public backgroundMode: BackgroundMode) {
     console.log('Hello LocationTrackerProvider Provider');
     // cordova.plugins.backgroundMode is now available
-    this.backgroundMode.enable();
     this.bmIsActive = backgroundMode.isActive();
     this.bmIsEnabled = backgroundMode.isEnabled();
     console.log(this.bmIsActive);
@@ -57,6 +56,7 @@ export class LocationTrackerProvider {
         console.log("this.zone.run");
         console.log("this.lat: " + this.lat + " | this.lng: " + this.lng);
       });
+      this.backgroundMode.enable();
       console.log(this.backgroundMode.isActive());
       console.log(this.backgroundMode.isEnabled());
     });

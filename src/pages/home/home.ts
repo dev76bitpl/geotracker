@@ -310,11 +310,11 @@ export class HomePage {
   }
 
   ionViewDidLoad() {
-    //console.log("ionViewDidLoad");
-    //this.getStatusFromStorage();
-    //this.getAppInfo();
-    //this.getDeviceInfo();
-    //this.resource;
+    console.log("ionViewDidLoad");
+    this.getStatusFromStorage();
+    this.getAppInfo();
+    this.getDeviceInfo();
+    this.resource;
   }
   ionViewWillEnter() {
     console.log('Runs when the page is about to enter and become the active page.');
