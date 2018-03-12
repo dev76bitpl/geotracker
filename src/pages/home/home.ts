@@ -9,6 +9,8 @@ import { AlertController } from 'ionic-angular';
 import { Storage } from '@ionic/storage';
 import { Http, Headers } from '@angular/http';
 import { Platform } from 'ionic-angular';
+import { BackgroundMode } from '@ionic-native/background-mode';
+
 
 interface deviceInterface {
   id?: string,
@@ -51,7 +53,7 @@ export class HomePage {
   public data: any = {};
   private toolbarColor: string;
 
-  constructor(public navCtrl: NavController, private device: Device, public locationTracker: LocationTrackerProvider, public alertCtrl: AlertController, private storage: Storage, public appInformation: AppInformationProvider, public localNotification: LocalNotificationProvider, public http: Http, public resource: ResourceTextProvider, private platform: Platform) {
+  constructor(public navCtrl: NavController, private device: Device, public locationTracker: LocationTrackerProvider, public alertCtrl: AlertController, private storage: Storage, public appInformation: AppInformationProvider, public localNotification: LocalNotificationProvider, public http: Http, public resource: ResourceTextProvider, private platform: Platform, public backgroundMode: BackgroundMode) {
     this.intervalTimeInSec = this.resource.config.intervalTime / 1000;
     this.data.response = '';
     this.http = http;
@@ -59,6 +61,9 @@ export class HomePage {
     platform.ready().then(() => {
       console.log("platform.ready()" + platform.version());
       console.log("ionViewDidLoad");
+      //this.backgroundMode.enable();
+      console.log("backgroundMode enabled: " + this.backgroundMode.isEnabled());
+      console.log("backgroundMode isactive: " + this.backgroundMode.isActive());
       this.getStatusFromStorage();
       this.getAppInfo();
       this.getDeviceInfo();
@@ -118,6 +123,7 @@ export class HomePage {
     });
     console.log("getStatusFromStorage() - stop");
   }
+
   start() {
     console.log("start()");
     console.log(this.resource.jobStatus.work);
@@ -125,13 +131,12 @@ export class HomePage {
     this.getStatusFromStorage();
     this.locationTracker.startTracking();
     this.setInterval = setInterval(data => {
-      //this.saveCoords(this.resource.jobStatus.work);
-      this.saveCoordsTest(this.resource.jobStatus.work);
+      this.saveCoords(this.resource.jobStatus.work);
+      //this.saveCoordsTest(this.resource.jobStatus.work);
       this.saveStatusToStorage(this.resource.jobStatus.work);
       console.log("test przed this.getStatusFromStorage()");
       this.getStatusFromStorage();
     }, this.resource.config.intervalTime);
-    //this.toolbarColor = 'secondary';
   }
 
   break() {
@@ -141,8 +146,8 @@ export class HomePage {
     this.locationTracker.breakTracking();
     this.getStatusFromStorage();
     clearInterval(this.setInterval);
-    //this.saveCoords(this.resource.jobStatus.break);
-    this.saveCoordsTest(this.resource.jobStatus.break);
+    this.saveCoords(this.resource.jobStatus.break);
+    //this.saveCoordsTest(this.resource.jobStatus.break);
   }
 
   stop() {
@@ -152,13 +157,12 @@ export class HomePage {
     this.locationTracker.stopTracking();
     clearInterval(this.setInterval);
     this.getStatusFromStorage();
-    //this.saveCoords(this.resource.jobStatus.end);
-    this.saveCoordsTest(this.resource.jobStatus.end);
+    this.saveCoords(this.resource.jobStatus.end);
+    //this.saveCoordsTest(this.resource.jobStatus.end);
     this.storage.remove("coords");
     this.storage.remove("status");
     //this.storage.clear();
   }
-
 
   saveCoordsTest(status) {
     console.log("saveCoords()")
@@ -177,11 +181,10 @@ export class HomePage {
     });
     var myData = JSON.stringify(jsonobj);
 
-    if (jsonobj.lat > 0 && jsonobj.long > 0) {
+    if (jsonobj.lat != 0 && jsonobj.long != 0) {
       // send data to server
       var headers = new Headers();
       headers.append('Content-Type', 'application/json');
-      //headers.append('Content-Type', 'text/csv');
       this.http.post(this.resource.config.apiLinkTest + "?imei=" + jsonobj.imei, myData, {
         headers: headers
       })
@@ -208,40 +211,6 @@ export class HomePage {
     }
   }
 
-  submit() {
-    console.log("submit()")
-    this.unixTime = Date.now() / 1000 | 0;
-    this.date = (new Date);
-    console.log(this.storage.driver);
-
-    /* create json object from functions to storage save */
-    let jsonobj = { "date": (new Date), "lat": this.locationTracker.lat, "long": this.locationTracker.lng, "status": "working", "storage.driver": this.storage.driver, "bgmodeActive": this.locationTracker.bmIsActive, "bgmodeIsEnabled": this.locationTracker.bmIsEnabled, "time": this.unixTime, "imei": this.device.uuid };
-
-    // add json object to storage database
-    this.storage.set("coords", jsonobj);
-    //this.storage.set("log-" + this.unixTime, jsonobj);
-    this.storage.get('coords').then((val) => {
-      this.items = val;
-    });
-    var myData = JSON.stringify(jsonobj);
-
-    if (jsonobj.lat > 0 && jsonobj.long > 0) {
-      // send data to server
-      var headers = new Headers();
-      headers.append('Content-Type', 'application/json');
-      //headers.append('Content-Type', 'text/csv');
-      this.http.post(this.resource.config.apiLinkTest + "?imei=" + jsonobj.imei, myData, {
-        headers: headers
-      })
-        .subscribe(data => {
-          this.data.response = data['_body'];
-          console.log(this.data.response);
-          this.localNotification.pushNotificationSuccess(jsonobj.lat, jsonobj.long);
-        }, error => {
-          console.log("error: " + JSON.stringify(error.json()));
-        });
-    }
-  }
   saveCoords(status) {
     console.log("saveCoords()")
     this.unixTime = Date.now() / 1000 | 0;
@@ -268,19 +237,15 @@ export class HomePage {
         status: val.status
       });
 
-      if (val.lat > 0 && val.long > 0) {
+      if (val.lat != 0 && val.long != 0) {
         // send data to server
         var headers = new Headers();
-        //headers.append('Content-Type', 'application/x-www-form-urlencoded');
         headers.append('Content-Type', 'application/json');
         this.http.post(this.resource.config.apiLinkProd, myData, {
           headers: headers
         })
           .subscribe(data => {
-            //Api prod
             this.data.response = JSON.parse(data['_body']);
-            //api test
-            //this.data.response = data['_body'];
 
             console.log("this.data.response: " + this.data.response.status);
             console.log("val.imei: " + val.imei);
@@ -309,12 +274,47 @@ export class HomePage {
     })*/
   }
 
+  submit() {
+    console.log("submit()")
+    this.unixTime = Date.now() / 1000 | 0;
+    this.date = (new Date);
+    console.log(this.storage.driver);
+
+    /* create json object from functions to storage save */
+    let jsonobj = { "date": (new Date), "lat": this.locationTracker.lat, "long": this.locationTracker.lng, "status": "working", "storage.driver": this.storage.driver, "bgmodeActive": this.locationTracker.bmIsActive, "bgmodeIsEnabled": this.locationTracker.bmIsEnabled, "time": this.unixTime, "imei": this.device.uuid };
+
+    // add json object to storage database
+    this.storage.set("coords", jsonobj);
+    //this.storage.set("log-" + this.unixTime, jsonobj);
+    this.storage.get('coords').then((val) => {
+      this.items = val;
+    });
+    var myData = JSON.stringify(jsonobj);
+
+    //if (jsonobj.lat && jsonobj.long) {
+    // send data to server
+    var headers = new Headers();
+    headers.append('Content-Type', 'application/json');
+    //headers.append('Content-Type', 'text/csv');
+    this.http.post(this.resource.config.apiLinkTest + "?imei=" + jsonobj.imei, myData, {
+      headers: headers
+    })
+      .subscribe(data => {
+        this.data.response = data['_body'];
+        console.log(this.data.response);
+        this.localNotification.pushNotificationSuccess(jsonobj.lat, jsonobj.long);
+      }, error => {
+        console.log("error: " + JSON.stringify(error.json()));
+      });
+    //}
+  }
+
   ionViewDidLoad() {
-    console.log("ionViewDidLoad");
-    this.getStatusFromStorage();
-    this.getAppInfo();
-    this.getDeviceInfo();
-    this.resource;
+    //console.log("ionViewDidLoad");
+    //this.getStatusFromStorage();
+    //this.getAppInfo();
+    //this.getDeviceInfo();
+    //this.resource;
   }
   ionViewWillEnter() {
     console.log('Runs when the page is about to enter and become the active page.');

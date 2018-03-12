@@ -29,13 +29,14 @@ export class LocationTrackerProvider {
   public bmIsActive: boolean;
   public bmIsEnabled: boolean;
 
-  constructor(public zone: NgZone, public geolocation: Geolocation, private backgroundMode: BackgroundMode) {
+  constructor(public zone: NgZone, public geolocation: Geolocation, public backgroundMode: BackgroundMode) {
     console.log('Hello LocationTrackerProvider Provider');
     // cordova.plugins.backgroundMode is now available
-    //this.bmIsActive = backgroundMode.isActive();
-    //this.bmIsEnabled = backgroundMode.isEnabled();
-    //console.log(this.bmIsActive);
-    //console.log(this.bmIsEnabled);
+    this.backgroundMode.enable();
+    this.bmIsActive = backgroundMode.isActive();
+    this.bmIsEnabled = backgroundMode.isEnabled();
+    console.log(this.bmIsActive);
+    console.log(this.bmIsEnabled);
   }
 
   startTracking() {
@@ -56,9 +57,8 @@ export class LocationTrackerProvider {
         console.log("this.zone.run");
         console.log("this.lat: " + this.lat + " | this.lng: " + this.lng);
       });
-      this.backgroundMode.enable();
-      console.log(this.bmIsActive);
-      console.log(this.bmIsEnabled);
+      console.log(this.backgroundMode.isActive());
+      console.log(this.backgroundMode.isEnabled());
     });
   }
 
@@ -69,8 +69,8 @@ export class LocationTrackerProvider {
     } else {
       this.watch.unsubscribe();
     }
-    console.log(this.bmIsActive);
-    console.log(this.bmIsEnabled);
+    console.log(this.backgroundMode.isActive());
+    console.log(this.backgroundMode.isEnabled());
     //this.backgroundMode.disable();
   }
 
@@ -82,8 +82,8 @@ export class LocationTrackerProvider {
     } else {
       this.watch.unsubscribe();
     }
-    console.log(this.bmIsActive);
-    console.log(this.bmIsEnabled);
+    console.log(this.backgroundMode.isActive());
+    console.log(this.backgroundMode.isEnabled());
     //this.backgroundMode.disable();
   }
 }

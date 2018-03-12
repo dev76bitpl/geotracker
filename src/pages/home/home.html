@@ -17,43 +17,24 @@
       <h4>{{this.jobStatusDb}}</h4>
     </ion-card-content>
   </ion-card>
-  <ion-card>
-    <ion-card-header>
-      Response
-    </ion-card-header>
-
-    <ion-card-content>
-      <b>{{data.response}}</b>
-    </ion-card-content>
-  </ion-card>
-  <button ion-button color="secondary" (click)="start()" [disabled]="buttonWorkingDisabled">{{resource.values.startWork}}</button>
-  <button ion-button color="primary" (click)="break()" [disabled]="buttonBreakDisabled">{{resource.values.breakWorkOn}}</button>
-  <button ion-button color="danger" (click)="stop()" [disabled]="buttonEndDisabled">{{resource.values.stopWork}}</button>
-  <button ion-button color="primary" (click)="submit()">send to server</button>
+  <button ion-button color="secondary" full (click)="start()" [disabled]="buttonWorkingDisabled">{{resource.values.startWork}}</button>
+  <button ion-button color="primary" full (click)="break()" [disabled]="buttonBreakDisabled">{{resource.values.breakWorkOn}}</button>
+  <button ion-button color="danger" full (click)="stop()" [disabled]="buttonEndDisabled">{{resource.values.stopWork}}</button>
+  <!-- <button margin-top ion-button color="dark" full (click)="submit()">send manually coords to server *</button>
+  <div>* this feature works only when the job status is working (green)</div>-->
   <div>
     <ion-card>
       <ion-card-header>
-        LOCATION FROM DEVICE
+        RESOPONSE FROM SERVER
         <p>refresh {{this.intervalTimeInSec}}s</p>
       </ion-card-header>
       <ion-card-content>
-        <h4>Current Date: {{this.dateNow}}</h4>
-        <h4>Current Latitude: {{locationTracker.lat}}</h4>
-        <h4>Current Longitude: {{locationTracker.lng}}</h4>
+        <b>{{data.response | json}}</b>
       </ion-card-content>
     </ion-card>
-    <ion-card>
-      <ion-card-header>
-        LOCATION FROM DATABASE
-        <p>refresh {{this.intervalTimeInSec}}s</p>
-      </ion-card-header>
-      <ion-card-content>
-        <pre>{{items|json}}</pre>
-      </ion-card-content>
-    </ion-card>
-    <p>
+    <!--    <p>
       <a href="{{resource.config.googleMapsUrl}}{{locationTracker.lat}},{{locationTracker.lng}}">check this coordinate on google maps</a>
-    </p>
+    </p>-->
 
   </div>
 </ion-content>
