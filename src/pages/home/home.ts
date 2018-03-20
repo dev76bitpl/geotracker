@@ -51,11 +51,13 @@ export class HomePage {
   public setInterval: number;
   public items: {};
   public data: any = {};
+  public dataLogs: any = {};
   private toolbarColor: string;
 
   constructor(public navCtrl: NavController, private device: Device, public locationTracker: LocationTrackerProvider, public alertCtrl: AlertController, private storage: Storage, public appInformation: AppInformationProvider, public localNotification: LocalNotificationProvider, public http: Http, public resource: ResourceTextProvider, private platform: Platform, public backgroundMode: BackgroundMode) {
     this.intervalTimeInSec = this.resource.config.intervalTime / 1000;
     this.data.response = '';
+    this.dataLogs.response = '';
     this.http = http;
 
     platform.ready().then(() => {
@@ -132,7 +134,7 @@ export class HomePage {
     this.locationTracker.startTracking();
     this.setInterval = setInterval(data => {
       this.saveCoords(this.resource.jobStatus.work);
-      //this.saveCoordsTest(this.resource.jobStatus.work);
+      this.saveCoordsLogs(this.resource.jobStatus.work);
       this.saveStatusToStorage(this.resource.jobStatus.work);
       console.log("test przed this.getStatusFromStorage()");
       this.getStatusFromStorage();
@@ -147,7 +149,7 @@ export class HomePage {
     this.getStatusFromStorage();
     clearInterval(this.setInterval);
     this.saveCoords(this.resource.jobStatus.break);
-    //this.saveCoordsTest(this.resource.jobStatus.break);
+    this.saveCoordsLogs(this.resource.jobStatus.break);
   }
 
   stop() {
@@ -158,10 +160,37 @@ export class HomePage {
     clearInterval(this.setInterval);
     this.getStatusFromStorage();
     this.saveCoords(this.resource.jobStatus.end);
-    //this.saveCoordsTest(this.resource.jobStatus.end);
+    this.saveCoordsLogs(this.resource.jobStatus.end);
     this.storage.remove("coords");
     this.storage.remove("status");
     //this.storage.clear();
+  }
+
+  saveCoordsLogs(status) {
+    console.log("saveCoords()")
+    this.unixTime = Date.now() / 1000 | 0;
+    this.date = (new Date);
+    console.log(this.storage.driver);
+
+    /* create json object from functions to storage save */
+    let jsonobj = { "date": (new Date), "lat": this.locationTracker.lat, "long": this.locationTracker.lng, "status": status, "storage.driver": this.storage.driver, "bgmodeActive": this.backgroundMode.isActive(), "bgmodeIsEnabled": this.backgroundMode.isEnabled(), "time": this.unixTime, "imei": this.device.uuid };
+
+    var myDataLogs = JSON.stringify(jsonobj);
+
+    if (jsonobj.lat != 0 && jsonobj.long != 0) {
+      // send data to server
+      var headers = new Headers();
+      headers.append('Content-Type', 'application/json');
+      this.http.post(this.resource.config.apiLinkTest + "?imei=" + jsonobj.imei, myDataLogs, {
+        headers: headers
+      })
+        .subscribe(data => {
+          this.dataLogs.response = data['_body'];
+          console.log(this.dataLogs.response);
+        }, error => {
+          console.log("error: " + JSON.stringify(error.json()));
+        });
+    }
   }
 
   saveCoordsTest(status) {
@@ -218,7 +247,7 @@ export class HomePage {
     console.log(this.storage.driver);
 
     /* create json object from functions to storage save */
-    let jsonobj = { "date": this.dateNow, "lat": this.locationTracker.lat, "long": this.locationTracker.lng, "status": status, "storage.driver": this.storage.driver, "bgmodeActive": this.locationTracker.bmIsActive, "bgmodeIsEnabled": this.locationTracker.bmIsEnabled, "time": this.unixTime, "imei": this.device.uuid };
+    let jsonobj = { "date": this.dateNow, "lat": this.locationTracker.lat, "long": this.locationTracker.lng, "status": status, "storage.driver": this.storage.driver, "bgmodeActive": this.backgroundMode.isActive(), "bgmodeIsEnabled": this.backgroundMode.isEnabled(), "time": this.unixTime, "imei": this.device.uuid };
 
     // add json object to storage database
     this.storage.set("coords", jsonobj);
@@ -255,7 +284,7 @@ export class HomePage {
             let access = (this.data.response.status === "SUCCESS");
             if (access) {
               // push notification with coords
-              this.localNotification.pushNotificationSuccess(val.lat, val.long);
+              //this.localNotification.pushNotificationSuccess(val.lat, val.long);
               console.log("success");
             } else {
               // dodac zapisywanie rekordu do bazy w celu pozniejszej wysylki

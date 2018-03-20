@@ -53,12 +53,12 @@ export class LocationTrackerProvider {
         this.lat = position.coords.latitude;
         this.lng = position.coords.longitude;
         this.position = position;
-        console.log("this.zone.run");
-        console.log("this.lat: " + this.lat + " | this.lng: " + this.lng);
+        //console.log("this.zone.run");
+        //console.log("this.lat: " + this.lat + " | this.lng: " + this.lng);
       });
       this.backgroundMode.enable();
-      console.log(this.backgroundMode.isActive());
-      console.log(this.backgroundMode.isEnabled());
+      //console.log(this.backgroundMode.isActive());
+      //console.log(this.backgroundMode.isEnabled());
     });
   }
 
