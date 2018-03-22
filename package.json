@@ -85,7 +85,8 @@
       "cordova-plugin-android-support-v4": {}
     },
     "platforms": [
-      "ios"
+      "ios",
+      "android"
     ]
   }
 }
