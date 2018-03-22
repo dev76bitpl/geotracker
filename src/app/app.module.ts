@@ -21,6 +21,7 @@ import { LocalNotificationProvider } from '../providers/local-notification/local
 import { LocalNotifications } from '@ionic-native/local-notifications';
 import { HttpModule } from '@angular/http';
 import { ResourceTextProvider } from '../providers/resource-text/resource-text';
+import { BackgroundGeolocation } from '@ionic-native/background-geolocation';
 
 @NgModule({
   declarations: [
@@ -51,6 +52,7 @@ import { ResourceTextProvider } from '../providers/resource-text/resource-text';
     StatusBar,
     SplashScreen,
     Geolocation,
+    BackgroundGeolocation,
     Device,
     BackgroundMode,
     LocationTrackerProvider,

@@ -131,7 +131,8 @@ export class HomePage {
     console.log(this.resource.jobStatus.work);
     this.saveStatusToStorage(this.resource.jobStatus.preparework);
     this.getStatusFromStorage();
-    this.locationTracker.startTracking();
+    //this.locationTracker.startTracking();
+    this.locationTracker.startTracking2();
     this.setInterval = setInterval(data => {
       this.saveCoords(this.resource.jobStatus.work);
       this.saveCoordsLogs(this.resource.jobStatus.work);
@@ -145,7 +146,8 @@ export class HomePage {
     console.log("break()");
     console.log(this.resource.jobStatus.break);
     this.saveStatusToStorage(this.resource.jobStatus.break);
-    this.locationTracker.breakTracking();
+    //this.locationTracker.breakTracking();
+    this.locationTracker.stopTracking2();
     this.getStatusFromStorage();
     clearInterval(this.setInterval);
     this.saveCoords(this.resource.jobStatus.break);
@@ -156,7 +158,8 @@ export class HomePage {
     console.log("stop()");
     console.log(this.resource.jobStatus.end);
     this.saveStatusToStorage(this.resource.jobStatus.end);
-    this.locationTracker.stopTracking();
+    //this.locationTracker.stopTracking();
+    this.locationTracker.stopTracking2();
     clearInterval(this.setInterval);
     this.getStatusFromStorage();
     this.saveCoords(this.resource.jobStatus.end);
@@ -173,7 +176,7 @@ export class HomePage {
     console.log(this.storage.driver);
 
     /* create json object from functions to storage save */
-    let jsonobj = { "date": (new Date), "lat": this.locationTracker.lat, "long": this.locationTracker.lng, "status": status, "storage.driver": this.storage.driver, "bgmodeActive": this.backgroundMode.isActive(), "bgmodeIsEnabled": this.backgroundMode.isEnabled(), "time": this.unixTime, "imei": this.device.uuid };
+    let jsonobj = { "date": this.date, "lat": this.locationTracker.lat, "long": this.locationTracker.lng, "lat2": this.locationTracker.lat2, "long2": this.locationTracker.lng2, "status": status, "storage.driver": this.storage.driver, "bgmodeActive": this.backgroundMode.isActive(), "bgmodeIsEnabled": this.backgroundMode.isEnabled(), "time": this.unixTime, "imei": this.device.uuid };
 
     var myDataLogs = JSON.stringify(jsonobj);
 
@@ -200,7 +203,7 @@ export class HomePage {
     console.log(this.storage.driver);
 
     /* create json object from functions to storage save */
-    let jsonobj = { "date": (new Date), "lat": this.locationTracker.lat, "long": this.locationTracker.lng, "status": status, "storage.driver": this.storage.driver, "bgmodeActive": this.locationTracker.bmIsActive, "bgmodeIsEnabled": this.locationTracker.bmIsEnabled, "time": this.unixTime, "imei": this.device.uuid };
+    let jsonobj = { "date": this.date, "lat": this.locationTracker.lat, "long": this.locationTracker.lng, "lat2": this.locationTracker.lat2, "long2": this.locationTracker.lng2, "status": status, "storage.driver": this.storage.driver, "bgmodeActive": this.backgroundMode.isActive(), "bgmodeIsEnabled": this.backgroundMode.isEnabled(), "time": this.unixTime, "imei": this.device.uuid };
 
     // add json object to storage database
     this.storage.set("coords", jsonobj);
@@ -247,7 +250,7 @@ export class HomePage {
     console.log(this.storage.driver);
 
     /* create json object from functions to storage save */
-    let jsonobj = { "date": this.dateNow, "lat": this.locationTracker.lat, "long": this.locationTracker.lng, "status": status, "storage.driver": this.storage.driver, "bgmodeActive": this.backgroundMode.isActive(), "bgmodeIsEnabled": this.backgroundMode.isEnabled(), "time": this.unixTime, "imei": this.device.uuid };
+    let jsonobj = { "date": this.date, "lat": this.locationTracker.lat2, "long": this.locationTracker.lng2, "lat2": this.locationTracker.lat2, "long2": this.locationTracker.lng2, "status": status, "storage.driver": this.storage.driver, "bgmodeActive": this.backgroundMode.isActive(), "bgmodeIsEnabled": this.backgroundMode.isEnabled(), "time": this.unixTime, "imei": this.device.uuid };
 
     // add json object to storage database
     this.storage.set("coords", jsonobj);

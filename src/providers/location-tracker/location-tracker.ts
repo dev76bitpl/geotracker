@@ -2,6 +2,8 @@ import { Injectable, NgZone } from '@angular/core';
 import { Geolocation, Geoposition } from '@ionic-native/geolocation';
 import 'rxjs/add/operator/filter';
 import { BackgroundMode } from '@ionic-native/background-mode';
+import { BackgroundGeolocation } from '@ionic-native/background-geolocation';
+import { Platform } from 'ionic-angular';
 
 /*
 The JSON keys we are using are location, time, imei and status
@@ -23,13 +25,15 @@ export class LocationTrackerProvider {
   public watch: any;
   public lat: number = 0;
   public lng: number = 0;
+  public lat2: number = 0;
+  public lng2: number = 0;
   public googleMapsUrl: string;
   public buttonClicked: boolean = false;
   public position: any;
   public bmIsActive: boolean;
   public bmIsEnabled: boolean;
 
-  constructor(public zone: NgZone, public geolocation: Geolocation, public backgroundMode: BackgroundMode) {
+  constructor(public zone: NgZone, public geolocation: Geolocation, public backgroundMode: BackgroundMode, public backgroundGeolocation: BackgroundGeolocation, public platform: Platform) {
     console.log('Hello LocationTrackerProvider Provider');
     // cordova.plugins.backgroundMode is now available
     this.bmIsActive = backgroundMode.isActive();
@@ -55,7 +59,16 @@ export class LocationTrackerProvider {
         this.position = position;
         //console.log("this.zone.run");
         //console.log("this.lat: " + this.lat + " | this.lng: " + this.lng);
+        this.geolocation.getCurrentPosition().then((resp) => {
+          this.lat2 = resp.coords.latitude;
+          this.lng2 = resp.coords.longitude;
+          console.log("this.lat2: " + resp.coords.latitude);
+          console.log("this.lng2: " + resp.coords.longitude);
+        }).catch((error) => {
+          console.log('Error getting location', error);
+        });
       });
+
       this.backgroundMode.enable();
       //console.log(this.backgroundMode.isActive());
       //console.log(this.backgroundMode.isEnabled());
@@ -86,4 +99,77 @@ export class LocationTrackerProvider {
     console.log(this.backgroundMode.isEnabled());
     //this.backgroundMode.disable();
   }
+
+  startTracking2() {
+    // Background Tracking
+
+    let config = {
+      desiredAccuracy: 0,
+      stationaryRadius: 20,
+      distanceFilter: 10,
+      debug: false,
+      interval: 2000
+    };
+
+    this.backgroundGeolocation.configure(config).subscribe((location) => {
+
+      console.log('BackgroundGeolocation:  ' + location.latitude + ',' + location.longitude);
+
+      // IMPORTANT:  You must execute the finish method here to inform the native plugin that you're finished,
+      // and the background-task may be completed.  You must do this regardless if your HTTP request is successful or not.
+      // IF YOU DON'T, ios will CRASH YOUR APP for spending too much time in the background.
+      if (this.platform.is('ios')) {
+        this.backgroundGeolocation.finish(); // FOR IOS ONLY
+      }
+
+      // Run update inside of Angular's zone
+      this.zone.run(() => {
+        this.lat = location.latitude;
+        this.lng = location.longitude;
+        this.lat2 = location.latitude;
+        this.lng2 = location.longitude;
+      });
+
+    }, (err) => {
+
+      console.log(err);
+
+    });
+
+    // Turn ON the background-geolocation system.
+    this.backgroundGeolocation.start();
+
+
+    // Foreground Tracking
+
+    let options = {
+      frequency: 2000,
+      enableHighAccuracy: true
+    };
+
+    this.watch = this.geolocation.watchPosition(options).filter((p: any) => p.code === undefined).subscribe((position: Geoposition) => {
+
+      console.log(position);
+
+      // Run update inside of Angular's zone
+      this.zone.run(() => {
+        this.lat = position.coords.latitude;
+        this.lng = position.coords.longitude;
+        this.lat2 = position.coords.latitude;
+        this.lng2 = position.coords.longitude;
+      });
+
+    });
+    console.log("enable background mode");
+    this.backgroundMode.enable();
+  }
+
+  stopTracking2() {
+    console.log('stopTracking2');
+
+    this.backgroundGeolocation.finish();
+    this.backgroundGeolocation.stop();
+    this.watch.unsubscribe();
+  }
+
 }

@@ -14,7 +14,7 @@ export class AppInformationProvider {
   constructor(public zone: NgZone, public app: AppVersion) {
     console.log('Hello AppInformationProvider Provider');
     app.getVersionNumber().then(ver => {
-      this.app = ver;
+      //this.app = ver;
       console.log(this.app)
     }).catch(function (error) {
       console.log(error);
