@@ -134,6 +134,7 @@ export class HomePage {
     //this.locationTracker.startTracking();
     this.locationTracker.startTracking2();
     this.setInterval = setInterval(data => {
+      console.log("this.locationTracker.lat: " + this.locationTracker.lat + " | this.locationTracker.lng: " + this.locationTracker.lat);
       this.saveCoords(this.resource.jobStatus.work);
       this.saveCoordsLogs(this.resource.jobStatus.work);
       this.saveStatusToStorage(this.resource.jobStatus.work);
@@ -146,8 +147,8 @@ export class HomePage {
     console.log("break()");
     console.log(this.resource.jobStatus.break);
     this.saveStatusToStorage(this.resource.jobStatus.break);
-    //this.locationTracker.breakTracking();
-    this.locationTracker.stopTracking2();
+    this.locationTracker.breakTracking();
+    //this.locationTracker.stopTracking2();
     this.getStatusFromStorage();
     clearInterval(this.setInterval);
     this.saveCoords(this.resource.jobStatus.break);
@@ -166,7 +167,7 @@ export class HomePage {
     this.saveCoordsLogs(this.resource.jobStatus.end);
     this.storage.remove("coords");
     this.storage.remove("status");
-    //this.storage.clear();
+    this.storage.clear();
   }
 
   saveCoordsLogs(status) {
@@ -254,7 +255,7 @@ export class HomePage {
 
     // add json object to storage database
     this.storage.set("coords", jsonobj);
-    this.storage.set("log-" + this.unixTime, jsonobj);
+    //this.storage.set("log-" + this.unixTime, jsonobj);
     //console.log("jsonobj.lat: " + jsonobj.lat);
     //console.log("jsonobj.long: " + jsonobj.long);
     // get data from storage for http post to server
@@ -354,7 +355,6 @@ export class HomePage {
   onPageWillEnter() {
     console.log("you enter the view");
   }
-
   onPageWillLeave() {
     console.log("you leave the view");
   }

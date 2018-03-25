@@ -42,7 +42,7 @@ export class LocationTrackerProvider {
     console.log(this.bmIsEnabled);
   }
 
-  startTracking() {
+  /*startTracking() {
     // Foreground Tracking
     this.buttonClicked = !this.buttonClicked;
     let options = {
@@ -73,7 +73,7 @@ export class LocationTrackerProvider {
       //console.log(this.backgroundMode.isActive());
       //console.log(this.backgroundMode.isEnabled());
     });
-  }
+  }*/
 
   breakTracking() {
     console.log("break tracking...");
@@ -87,7 +87,7 @@ export class LocationTrackerProvider {
     //this.backgroundMode.disable();
   }
 
-  stopTracking() {
+  /*stopTracking() {
     console.log("stop tracking...");
     this.buttonClicked = !this.buttonClicked;
     if (this.watch === undefined) {
@@ -98,16 +98,17 @@ export class LocationTrackerProvider {
     console.log(this.backgroundMode.isActive());
     console.log(this.backgroundMode.isEnabled());
     //this.backgroundMode.disable();
-  }
+  }*/
 
   startTracking2() {
+    console.log("startTracking2()");
     // Background Tracking
 
     let config = {
       desiredAccuracy: 0,
       stationaryRadius: 20,
       distanceFilter: 10,
-      debug: false,
+      debug: true,
       interval: 2000
     };
 
@@ -128,6 +129,9 @@ export class LocationTrackerProvider {
         this.lng = location.longitude;
         this.lat2 = location.latitude;
         this.lng2 = location.longitude;
+        console.log("zone location start");
+        console.log(location);
+        console.log("zone location stop");
       });
 
     }, (err) => {
@@ -142,34 +146,38 @@ export class LocationTrackerProvider {
 
     // Foreground Tracking
 
-    let options = {
-      frequency: 2000,
-      enableHighAccuracy: true
-    };
-
-    this.watch = this.geolocation.watchPosition(options).filter((p: any) => p.code === undefined).subscribe((position: Geoposition) => {
-
-      console.log(position);
-
-      // Run update inside of Angular's zone
-      this.zone.run(() => {
-        this.lat = position.coords.latitude;
-        this.lng = position.coords.longitude;
-        this.lat2 = position.coords.latitude;
-        this.lng2 = position.coords.longitude;
-      });
-
-    });
+    /*    let options = {
+          frequency: 2000,
+          enableHighAccuracy: true
+        };
+    
+        this.watch = this.geolocation.watchPosition(options).filter((p: any) => p.code === undefined).subscribe((position: Geoposition) => {
+    
+          console.log(position);
+    
+          // Run update inside of Angular's zone
+          this.zone.run(() => {
+            this.lat = position.coords.latitude;
+            this.lng = position.coords.longitude;
+            this.lat2 = position.coords.latitude;
+            this.lng2 = position.coords.longitude;
+          });
+    
+        });*/
     console.log("enable background mode");
     this.backgroundMode.enable();
   }
 
   stopTracking2() {
     console.log('stopTracking2');
-
+    console.log("stop tracking...");
+    if (this.watch === undefined) {
+      console.log("nothing to do...");
+    } else {
+      this.watch.unsubscribe();
+    }
     this.backgroundGeolocation.finish();
     this.backgroundGeolocation.stop();
-    this.watch.unsubscribe();
   }
 
 }
