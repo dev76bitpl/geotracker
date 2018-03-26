@@ -34,7 +34,6 @@
     "cordova-ios": "4.5.4",
     "cordova-plugin-android-support-v4": "^21.0.1",
     "cordova-plugin-app-event": "^1.2.1",
-    "cordova-plugin-app-version": "^0.1.9",
     "cordova-plugin-background-mode": "^0.7.2",
     "cordova-plugin-badge": "^0.8.7",
     "cordova-plugin-device": "^2.0.1",
@@ -69,7 +68,6 @@
       "cordova-plugin-ionic-webview": {},
       "cordova-plugin-ionic-keyboard": {},
       "cordova-plugin-statusbar": {},
-      "cordova-plugin-app-version": {},
       "cordova-plugin-background-mode": {},
       "cordova-plugin-local-notification": {},
       "cordova-plugin-mauron85-background-geolocation": {
@@ -85,8 +83,7 @@
       "cordova-plugin-android-support-v4": {}
     },
     "platforms": [
-      "ios",
-      "android"
+      "ios"
     ]
   }
 }

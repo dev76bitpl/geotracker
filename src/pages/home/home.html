@@ -1,5 +1,5 @@
 <ion-header>
-  <ion-toolbar [color]="toolbarColor">
+  <ion-toolbar [color]="locationTracker.toolbarColor">
     <ion-title>{{resource.values.title}}</ion-title>
     <ion-buttons end>
       <button ion-button icon-only>
@@ -14,22 +14,22 @@
       JOB STATUS
     </ion-card-header>
     <ion-card-content>
-      <h4>{{this.jobStatusDb}}</h4>
+      <h4>{{this.locationTracker.jobStatusDb}}</h4>
     </ion-card-content>
   </ion-card>
-  <button ion-button color="secondary" full (click)="start()" [disabled]="buttonWorkingDisabled">{{resource.values.startWork}}</button>
-  <button ion-button color="primary" full (click)="break()" [disabled]="buttonBreakDisabled">{{resource.values.breakWorkOn}}</button>
-  <button ion-button color="danger" full (click)="stop()" [disabled]="buttonEndDisabled">{{resource.values.stopWork}}</button>
+  <button ion-button color="secondary" full (click)="start()" [disabled]="locationTracker.buttonWorkingDisabled">{{resource.values.startWork}}</button>
+  <button ion-button color="primary" full (click)="break()" [disabled]="locationTracker.buttonBreakDisabled">{{resource.values.breakWorkOn}}</button>
+  <button ion-button color="danger" full (click)="stop()" [disabled]="locationTracker.buttonEndDisabled">{{resource.values.stopWork}}</button>
   <!-- <button margin-top ion-button color="dark" full (click)="submit()">send manually coords to server *</button>
   <div>* this feature works only when the job status is working (green)</div>-->
   <div>
     <ion-card>
       <ion-card-header>
         RESOPONSE FROM SERVER
-        <p>refresh {{this.intervalTimeInSec}}s</p>
+        <p>refresh {{locationTracker.intervalTimeInSec}}s</p>
       </ion-card-header>
       <ion-card-content>
-        <b>{{data.response | json}}</b>
+        <b>{{locationTracker.data.response | json}}</b>
       </ion-card-content>
     </ion-card>
     <!--    <p>

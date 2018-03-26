@@ -55,7 +55,6 @@ import { BackgroundGeolocation } from '@ionic-native/background-geolocation';
     BackgroundGeolocation,
     Device,
     BackgroundMode,
-    LocationTrackerProvider,
     ResourceTextProvider,
     { provide: ErrorHandler, useClass: IonicErrorHandler },
     AppVersion,
