@@ -2,7 +2,7 @@ import { Injectable, NgZone } from '@angular/core';
 import { Geolocation, Geoposition } from '@ionic-native/geolocation';
 import 'rxjs/add/operator/filter';
 import { BackgroundMode } from '@ionic-native/background-mode';
-import { BackgroundGeolocation } from '@ionic-native/background-geolocation';
+import { BackgroundGeolocation, BackgroundGeolocationConfig } from '@ionic-native/background-geolocation';
 import { Platform } from 'ionic-angular';
 import { ResourceTextProvider } from '../../providers/resource-text/resource-text';
 import { Storage } from '@ionic/storage';
@@ -221,7 +221,7 @@ export class LocationTrackerProvider {
     this.saveStatusToStorage(this.resource.jobStatus.work);
     this.getStatusFromStorage();
     // Background Tracking
-    let config = {
+    let config: BackgroundGeolocationConfig = {
       stationaryRadius: 50,
       distanceFilter: 500,
       desiredAccuracy: 10,
@@ -235,7 +235,7 @@ export class LocationTrackerProvider {
       activitiesInterval: 10000,
       maxLocations: 10000,
       url: this.resource.config.apiLinkTest,
-      syncurl: this.resource.config.apiLinkTest,
+      syncUrl: this.resource.config.apiLinkTest,
       httpHeaders: {
         'X-FOO': 'bar'
       },
