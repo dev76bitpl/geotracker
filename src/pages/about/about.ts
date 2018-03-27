@@ -1,12 +1,13 @@
 import { Component, NgZone } from '@angular/core';
 import { IonicPage, NavController, NavParams, Platform } from 'ionic-angular';
 import { Device } from '@ionic-native/device';
+import { BackgroundGeolocation } from '@ionic-native/background-geolocation';
 
 
 // Url to post locations to
-const TRACKER_HOST = 'http://tracker.transistorsoft.com/locations/';
+//const TRACKER_HOST = 'http://tracker.transistorsoft.com/locations/';
+const TRACKER_HOST = 'http://work.simplicityengine.net:8086/location';
 
-@IonicPage()
 @Component({
   selector: 'page-about',
   templateUrl: 'about.html'
@@ -22,7 +23,7 @@ export class AboutPage {
   // ion-list datasource
   events: any;
 
-  constructor(public navCtrl: NavController, public navParams: NavParams, private device: Device, private platform: Platform, private zone: NgZone) {
+  constructor(public navCtrl: NavController, public navParams: NavParams, private device: Device, private platform: Platform, private zone: NgZone, public backgroundGeolocation: BackgroundGeolocation) {
     this.isMoving = false;
     this.enabled = false;
     this.events = [];
@@ -43,7 +44,7 @@ export class AboutPage {
     let url = TRACKER_HOST + username;
 
     // Get reference to BackgroundGeolocation API
-    this.bgGeo = (<any>window).BackgroundGeolocation;
+    this.bgGeo = (<any>window).backgroundGeolocation;
 
     // Step 1:  Listen to events
     this.bgGeo.on('location', this.onLocation.bind(this));

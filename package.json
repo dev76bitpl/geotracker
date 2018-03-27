@@ -70,16 +70,7 @@
       "cordova-plugin-statusbar": {},
       "cordova-plugin-background-mode": {},
       "cordova-plugin-local-notification": {},
-      "cordova-plugin-mauron85-background-geolocation": {
-        "GOOGLE_PLAY_SERVICES_VERSION": "+",
-        "ICON": "@mipmap/icon",
-        "SMALL_ICON": "@mipmap/icon",
-        "ACCOUNT_NAME": "@string/app_name",
-        "ACCOUNT_LABEL": "@string/app_name",
-        "ACCOUNT_TYPE": "$PACKAGE_NAME.account",
-        "CONTENT_AUTHORITY": "$PACKAGE_NAME",
-        "ALWAYS_USAGE_DESCRIPTION": "This app always requires location tracking"
-      },
+      "cordova-plugin-mauron85-background-geolocation": {},
       "cordova-plugin-android-support-v4": {}
     },
     "platforms": [

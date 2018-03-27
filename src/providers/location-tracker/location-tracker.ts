@@ -53,8 +53,6 @@ export class LocationTrackerProvider {
   public googleMapsUrl: string;
   public buttonClicked: boolean = false;
   public position: any;
-  public bmIsActive: boolean;
-  public bmIsEnabled: boolean;
 
   public appTitle: any;
   public deviceInfo: deviceInterface = {};
@@ -72,17 +70,13 @@ export class LocationTrackerProvider {
   public items: {};
   public data: any = {};
   public dataLogs: any = {};
+  public loc: any;
+  public vloc: any;
   private toolbarColor: string;
 
   constructor(public zone: NgZone, public geolocation: Geolocation, public backgroundMode: BackgroundMode, public backgroundGeolocation: BackgroundGeolocation, public platform: Platform, public resource: ResourceTextProvider, private storage: Storage, private device: Device, public http: Http, public localNotification: LocalNotificationProvider) {
     console.log('Hello LocationTrackerProvider Provider');
-    // cordova.plugins.backgroundMode is now available
-    this.bmIsActive = backgroundMode.isActive();
-    this.bmIsEnabled = backgroundMode.isEnabled();
-    console.log(this.bmIsActive);
-    console.log(this.bmIsEnabled);
 
-    this.intervalTimeInSec = this.resource.config.intervalTime / 1000;
     this.data.response = '';
     this.dataLogs.response = '';
     this.http = http;
@@ -91,8 +85,6 @@ export class LocationTrackerProvider {
       console.log("platform.ready()" + platform.version());
       console.log("ionViewDidLoad");
       //this.backgroundMode.enable();
-      console.log("backgroundMode enabled: " + this.backgroundMode.isEnabled());
-      console.log("backgroundMode isactive: " + this.backgroundMode.isActive());
       this.getStatusFromStorage();
       this.getDeviceInfo();
       this.resource;
@@ -132,6 +124,61 @@ export class LocationTrackerProvider {
     });
   }*/
 
+  //   public startTracking() {
+  // 
+  //     let config: BackgroundGeolocationConfig = {
+  //       stationaryRadius: 50,
+  //       distanceFilter: 50,
+  //       notificationTitle: 'Background tracking',
+  //       notificationText: 'enabled',
+  //       debug: true,
+  //       startOnBoot: false,
+  //       stopOnTerminate: false,
+  //       interval: this.resource.config.intervalTime,
+  //       fastestInterval: 5000,
+  //       activitiesInterval: 10000,
+  //       url: 'http://luczynski.eu/api/api.php',
+  //       desiredAccuracy: 0,
+  //     };
+  //     this.backgroundGeolocation.configure(config).subscribe((location) => {
+  // 
+  //       console.log('BackgroundGeolocation:  ' + location.latitude + ',' + location.longitude);
+  // 
+  //       // Update inside of Angular's zone
+  //       this.zone.run(() => {
+  //         this.lat = location.latitude;
+  //         this.lng = location.longitude;
+  //       });
+  //     }, (err) => {
+  //       console.log(err);
+  //     });
+  // 
+  //     this.backgroundGeolocation.start();
+  // 
+  //     // Background tracking
+  //     let options = {
+  //       frequency: 3000,
+  //       enableHighAccuracy: true
+  //     };
+  // 
+  //     this.watch = this.geolocation.watchPosition(options).filter((p: any) => p.code === undefined).subscribe((position: Geoposition) => {
+  //       console.log(position);
+  // 
+  //       this.zone.run(() => {
+  //         console.log('BackgroundGeolocation2:  ' + position.coords.latitude + ',' + position.coords.longitude);
+  //         this.lat = position.coords.latitude;
+  //         this.lng = position.coords.longitude;
+  //       });
+  //     });
+  //   }
+  //   // 
+  //   public stopTracking() {
+  //     console.log('stopTracking');
+  // 
+  //     this.backgroundGeolocation.finish();
+  //     this.watch.unsubscribe();
+  //   }
+  // 
   breakTracking() {
     console.log("break tracking...");
     console.log(this.resource.jobStatus.break);
@@ -170,23 +217,40 @@ export class LocationTrackerProvider {
   startTracking() {
     console.log("startTracking()");
     console.log(this.resource.jobStatus.work);
-    this.saveStatusToStorage(this.resource.jobStatus.preparework);
+    //this.saveStatusToStorage(this.resource.jobStatus.preparework);
+    this.saveStatusToStorage(this.resource.jobStatus.work);
     this.getStatusFromStorage();
     // Background Tracking
     let config = {
-      reset: true,
+      stationaryRadius: 50,
+      distanceFilter: 500,
+      desiredAccuracy: 10,
+      notificationTitle: 'Background tracking',
+      notificationText: 'enabled',
       debug: true,
-      distanceFilter: 10,
-      stopTimeout: 1,
+      startOnBoot: false,
       stopOnTerminate: false,
-      startOnBoot: true,
-      foregroundService: true,
-      autoSync: true,
-      desiredAccuracy: 0,
-      stationaryRadius: 20,
-      interval: this.resource.config.intervalTime
+      interval: this.resource.config.intervalTime,
+      fastestInterval: 5000,
+      activitiesInterval: 10000,
+      maxLocations: 10000,
+      url: this.resource.config.apiLinkTest,
+      syncurl: this.resource.config.apiLinkTest,
+      httpHeaders: {
+        'X-FOO': 'bar'
+      },
+      // customize post properties
+      postTemplate: {
+        time: "1502711997",
+        imei: "353413088320170",
+        latitude: "40.78",
+        longitude: "-73.97",
+        status: "working"
+      },
     };
-    console.log("startTracking() - after let config");
+
+    console.log("startTracking()");
+
     this.backgroundGeolocation.configure(config).subscribe((location) => {
       console.log('BackgroundGeolocation:  ' + location.latitude + ',' + location.longitude);
       // IMPORTANT:  You must execute the finish method here to inform the native plugin that you're finished,
@@ -201,19 +265,46 @@ export class LocationTrackerProvider {
         enableHighAccuracy: true
       };
 
+      this.backgroundGeolocation.deleteAllLocations();
       this.watch = this.geolocation.watchPosition(options).filter((p: any) => p.code === undefined).subscribe((position: Geoposition) => {
 
         // Run update inside of Angular's zone
         this.zone.run(() => {
-          this.setInterval = setInterval(data => {
-            this.lat = location.latitude;
-            this.lng = location.longitude;
-            console.log("this.lat: " + this.lat + " | this.lng: " + this.lng);
-            //this.saveCoords(this.resource.jobStatus.work, this.lat, this.lng);
-            this.saveCoordsLogs(this.resource.jobStatus.work, this.lat, this.lng);
-            this.saveStatusToStorage(this.resource.jobStatus.work);
-            this.getStatusFromStorage();
-          }, this.resource.config.intervalTime);
+          //this.setInterval = setInterval(data => {
+          this.lat = location.latitude;
+          this.lng = location.longitude;
+          console.log("this.lat: " + this.lat + " | this.lng: " + this.lng);
+
+
+          /*console.log("this.backgroundGeolocation.isLocationEnabled()");
+          this.backgroundGeolocation.isLocationEnabled();
+          console.log("this.backgroundGeolocation.showAppSettings()");
+          //this.backgroundGeolocation.showAppSettings();
+          console.log("this.backgroundGeolocation.showLocationSettings()");
+          //this.backgroundGeolocation.showLocationSettings();
+          console.log("this.backgroundGeolocation.getLocations()");
+          console.log(this.backgroundGeolocation.getLocations());
+          console.log("this.backgroundGeolocation.getValidLocations()");
+          this.backgroundGeolocation.getValidLocations();
+          console.log("this.backgroundGeolocation.getLogEntries(0)");
+          this.backgroundGeolocation.getLogEntries(0);*/
+
+          this.backgroundGeolocation.getLocations().then(location => {
+            this.loc = location;
+            console.log("getLocations() - location");
+            console.log(location);
+          });
+          this.backgroundGeolocation.getValidLocations().then(validLocation => {
+            this.vloc = validLocation;
+            console.log("getValidLocations() - validLocation");
+            console.log(validLocation);
+          });
+
+          //this.saveCoords(this.resource.jobStatus.work, this.lat, this.lng);
+          //this.saveCoordsLogs(this.resource.jobStatus.work, this.lat, this.lng);
+          //this.saveStatusToStorage(this.resource.jobStatus.work);
+          //this.getStatusFromStorage();
+          //}, this.resource.config.intervalTime);
         });
 
 
@@ -224,9 +315,9 @@ export class LocationTrackerProvider {
       });
 
     });
+
     // Turn ON the background-geolocation system.
     this.backgroundGeolocation.start();
-
 
     // Foreground Tracking
 
@@ -248,7 +339,7 @@ export class LocationTrackerProvider {
           });
     
         });*/
-    console.log("enable background mode");
+    //console.log("enable background mode");
     this.backgroundMode.enable();
   }
 

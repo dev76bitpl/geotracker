@@ -1,5 +1,5 @@
 <?xml version='1.0' encoding='utf-8'?>
-<widget id="io.geotracker" version="0.90" xmlns="http://www.w3.org/ns/widgets" xmlns:cdv="http://cordova.apache.org/ns/1.0">
+<widget id="io.geotracker" version="0.94" xmlns="http://www.w3.org/ns/widgets" xmlns:cdv="http://cordova.apache.org/ns/1.0">
     <name>geotracker</name>
     <description>An awesome Ionic/Cordova app.</description>
     <author email="hi@ionicframework" href="http://ionicframework.com/">Ionic Framework Team</author>
@@ -91,5 +91,11 @@
     <plugin name="cordova-plugin-background-mode" spec="^0.7.2" />
     <plugin name="cordova-plugin-local-notification" spec="^0.9.0-beta.2" />
     <plugin name="cordova-plugin-android-support-v4" spec="^21.0.1" />
+    <plugin name="cordova-plugin-mauron85-background-geolocation" spec="^2.3.3">
+        <variable name="ALWAYS_USAGE_DESCRIPTION" value="This app requires background tracking enabled" />
+        <variable name="MOTION_USAGE_DESCRIPTION" value="This app requires motion detection" />
+        <variable name="GOOGLE_PLAY_SERVICES_VERSION" value="11.0.1" />
+        <variable name="ANDROID_SUPPORT_LIBRARY_VERSION" value="23+" />
+    </plugin>
     <engine name="ios" spec="4.5.4" />
 </widget>
