@@ -1,5 +1,5 @@
 <?xml version='1.0' encoding='utf-8'?>
-<widget id="io.geotracker" version="0.94" xmlns="http://www.w3.org/ns/widgets" xmlns:cdv="http://cordova.apache.org/ns/1.0">
+<widget id="io.geotracker" version="0.96" xmlns="http://www.w3.org/ns/widgets" xmlns:cdv="http://cordova.apache.org/ns/1.0">
     <name>geotracker</name>
     <description>An awesome Ionic/Cordova app.</description>
     <author email="hi@ionicframework" href="http://ionicframework.com/">Ionic Framework Team</author>
@@ -79,22 +79,24 @@
         <splash height="2732" src="resources/ios/splash/Default@2x~universal~anyany.png" width="2732" />
     </platform>
     <plugin name="cordova-plugin-whitelist" spec="^1.3.3" />
+    <plugin name="cordova-plugin-statusbar" spec="^2.4.1" />
     <plugin name="cordova-plugin-splashscreen" spec="^5.0.2" />
     <plugin name="cordova-plugin-ionic-webview" spec="^1.1.16" />
     <plugin name="cordova-plugin-ionic-keyboard" spec="^2.0.5" />
-    <plugin name="cordova-plugin-geolocation" spec="^4.0.1">
-        <variable name="GEOLOCATION_USAGE_DESCRIPTION" value="To locate you" />
-    </plugin>
+    <plugin name="cordova-plugin-geolocation" spec="^4.0.1" />
     <plugin name="cordova-plugin-device" spec="^2.0.1" />
-    <plugin name="cordova-plugin-statusbar" spec="^2.4.1" />
     <plugin name="cordova-plugin-background-mode" spec="^0.7.2" />
-    <plugin name="cordova-plugin-android-support-v4" spec="^21.0.1" />
     <plugin name="cordova-plugin-mauron85-background-geolocation" spec="^2.3.4">
-        <variable name="ALWAYS_USAGE_DESCRIPTION" value="This app always requires location tracking" />
-        <variable name="MOTION_USAGE_DESCRIPTION" value="This app requires motion detection" />
-        <variable name="GOOGLE_PLAY_SERVICES_VERSION" value="11.0.1" />
+        <variable name="GOOGLE_PLAY_SERVICES_VERSION" value="11+" />
         <variable name="ANDROID_SUPPORT_LIBRARY_VERSION" value="23+" />
+        <variable name="ICON" value="@mipmap/icon" />
+        <variable name="SMALL_ICON" value="@mipmap/icon" />
+        <variable name="ACCOUNT_NAME" value="@string/app_name" />
+        <variable name="ACCOUNT_LABEL" value="@string/app_name" />
+        <variable name="ACCOUNT_TYPE" value="$PACKAGE_NAME.account" />
+        <variable name="CONTENT_AUTHORITY" value="$PACKAGE_NAME" />
+        <variable name="ALWAYS_USAGE_DESCRIPTION" value="This app always requires location tracking" />
     </plugin>
     <engine name="ios" spec="4.5.4" />
-    <engine name="android" spec="6.4.0" />
+    <engine name="android" spec="7.0.0" />
 </widget>
