@@ -12,6 +12,7 @@ export class ResourceTextProvider {
   public config = {
     appversion: "0.96",
     intervalTime: 20000,
+    intervalTimeInSec: 20000 / 1000,
     apiLinkProd: 'http://work.simplicityengine.net:8086/location',
     apiLinkTest: 'http://luczynski.eu/api/api.php',
     apiLinkTest2: "http://localhost:9000",

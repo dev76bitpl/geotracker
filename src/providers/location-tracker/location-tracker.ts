@@ -296,6 +296,7 @@ export class LocationTrackerProvider {
               this.saveStatusToStorage(this.resource.jobStatus.work);
               this.setButtonStatus(this.resource.jobStatus.work);
             } else {
+              this.saveStatusToStorage(this.resource.jobStatus.preparework);
               this.setButtonStatus(this.resource.jobStatus.preparework);
             }
           });
