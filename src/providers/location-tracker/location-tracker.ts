@@ -309,12 +309,12 @@ export class LocationTrackerProvider {
           this.backgroundGeolocation.getValidLocations().then(value => {
             this.getValidLocations = value;
             console.log("getValidLocations() - validLocation");
-            console.log(value);
+            //console.log(value);
           });
 
           this.backgroundGeolocation.getLogEntries(0).then(value => {
             this.getLogEntries = value;
-            console.log(this.getLogEntries);
+            //console.log(this.getLogEntries);
           })
 
           //this.saveCoords(this.resource.jobStatus.work, this.lat, this.lng);
@@ -372,11 +372,11 @@ export class LocationTrackerProvider {
 
     this.backgroundGeolocation.finish();
     this.backgroundGeolocation.stop();
-    console.log("this.setInterval przed clear");
-    console.log(this.setInterval);
-    clearInterval(this.setInterval);
-    console.log("this.setInterval po clear");
-    console.log(this.setInterval);
+    //console.log("this.setInterval przed clear");
+    //console.log(this.setInterval);
+    //clearInterval(this.setInterval);
+    //console.log("this.setInterval po clear");
+    //console.log(this.setInterval);
 
     if (this.watch === undefined) {
       console.log("nothing to do...");
