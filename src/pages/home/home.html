@@ -32,6 +32,24 @@
         <b>{{locationTracker.data.response | json}}</b>
       </ion-card-content>
     </ion-card>
+    <ion-card>
+      <ion-card-header>
+        <b>COORDINATES</b>
+      </ion-card-header>
+      <ion-card-content>
+        <p>lat: {{locationTracker.latitude}}</p>
+        <p>lng: {{locationTracker.longitude}}</p>
+      </ion-card-content>
+    </ion-card>
+    <ion-card>
+      <ion-card-header>
+        DEBUG INFO
+      </ion-card-header>
+      <ion-card-content>
+        <b>isLocationEnabled</b>
+        <p>{{locationTracker.isLocationEnabled | json}}</p>
+      </ion-card-content>
+    </ion-card>
     <!--    <p>
       <a href="{{resource.config.googleMapsUrl}}{{locationTracker.lat}},{{locationTracker.lng}}">check this coordinate on google maps</a>
     </p>-->

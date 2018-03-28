@@ -50,6 +50,8 @@ export class LocationTrackerProvider {
   public watch: any;
   public lat: number = 0;
   public lng: number = 0;
+  public latitude: number = 0;
+  public longitude: number = 0;
   public googleMapsUrl: string;
   public buttonClicked: boolean = false;
   public position: any;
@@ -70,9 +72,13 @@ export class LocationTrackerProvider {
   public items: {};
   public data: any = {};
   public dataLogs: any = {};
-  public loc: any;
-  public vloc: any;
   private toolbarColor: string;
+
+  public isLocationEnabled: any;
+  public getValidLocations: any;
+  public getLocations: any;
+  public getLogEntries: any;
+  public vloc: any;
 
   constructor(public zone: NgZone, public geolocation: Geolocation, public backgroundMode: BackgroundMode, public backgroundGeolocation: BackgroundGeolocation, public platform: Platform, public resource: ResourceTextProvider, private storage: Storage, private device: Device, public http: Http, public localNotification: LocalNotificationProvider) {
     console.log('Hello LocationTrackerProvider Provider');
@@ -216,9 +222,9 @@ export class LocationTrackerProvider {
 
   startTracking() {
     console.log("startTracking()");
-    console.log(this.resource.jobStatus.work);
-    //this.saveStatusToStorage(this.resource.jobStatus.preparework);
-    this.saveStatusToStorage(this.resource.jobStatus.work);
+    console.log(this.resource.jobStatus.preparework);
+    this.saveStatusToStorage(this.resource.jobStatus.preparework);
+    //this.saveStatusToStorage(this.resource.jobStatus.work);
     this.getStatusFromStorage();
     // Background Tracking
     let config: BackgroundGeolocationConfig = {
@@ -229,7 +235,7 @@ export class LocationTrackerProvider {
       notificationText: 'enabled',
       debug: true,
       startOnBoot: false,
-      stopOnTerminate: false,
+      stopOnTerminate: true,
       interval: this.resource.config.intervalTime,
       fastestInterval: 5000,
       activitiesInterval: 10000,
@@ -240,13 +246,13 @@ export class LocationTrackerProvider {
         'X-FOO': 'bar'
       },
       // customize post properties
-      postTemplate: {
+      /*postTemplate: {
         time: "1502711997",
         imei: "353413088320170",
         latitude: "40.78",
         longitude: "-73.97",
         status: "working"
-      },
+      },*/
     };
 
     console.log("startTracking()");
@@ -289,16 +295,36 @@ export class LocationTrackerProvider {
           console.log("this.backgroundGeolocation.getLogEntries(0)");
           this.backgroundGeolocation.getLogEntries(0);*/
 
-          this.backgroundGeolocation.getLocations().then(location => {
-            this.loc = location;
+          this.backgroundGeolocation.isLocationEnabled().then(value => {
+            this.isLocationEnabled = value;
+            console.log(this.isLocationEnabled);
+
+            if (this.isLocationEnabled === true) {
+              this.latitude = location.latitude;
+              this.longitude = location.longitude;
+              this.saveCoordsLogs(this.resource.jobStatus.work, location.latitude, location.longitude);
+              this.saveStatusToStorage(this.resource.jobStatus.work);
+              this.setButtonStatus(this.resource.jobStatus.work);
+            } else {
+              this.setButtonStatus(this.resource.jobStatus.preparework);
+            }
+          });
+
+          this.backgroundGeolocation.getLocations().then(value => {
+            this.getLocations = value;
             console.log("getLocations() - location");
-            console.log(location);
+            //console.log(value);
           });
-          this.backgroundGeolocation.getValidLocations().then(validLocation => {
-            this.vloc = validLocation;
+          this.backgroundGeolocation.getValidLocations().then(value => {
+            this.getValidLocations = value;
             console.log("getValidLocations() - validLocation");
-            console.log(validLocation);
+            console.log(value);
           });
+
+          this.backgroundGeolocation.getLogEntries(0).then(value => {
+            this.getLogEntries = value;
+            console.log(this.getLogEntries);
+          })
 
           //this.saveCoords(this.resource.jobStatus.work, this.lat, this.lng);
           //this.saveCoordsLogs(this.resource.jobStatus.work, this.lat, this.lng);
