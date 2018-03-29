@@ -6,12 +6,53 @@ Job tracking geolocation app.
 ## Description
 
 
-## Compatibility
+# Compatibility
+
+Cli packages
+=============================================
 
 | Name                       | Version |
 |----------------------------|---------|
-| Cordova CLI                | 7.1.0   |
-| Cordova-Android            | 6.3.0   |
+| @ionic/cli-utils           | 1.19.2  |
+| ionic (Ionic CLI)          | 3.20.0  |
+
+
+Global packages
+=============================================
+
+| Name                       | Version |
+|----------------------------|---------|
+| cordova (Cordova CLI)      | 8.0.0   |
+
+
+Local packages
+=============================================
+
+| Name                       | Version |
+|----------------------------|---------|
+| @ionic/app-scripts         | 3.1.8   |
+| Cordova Platform Android   | 7.0.0   |
+| Cordova Platform iOS       | 4.5.4   |
+| Ionic Framework Angular    | 3.9.2   |
+
+
+System
+=============================================
+
+| Name                       | Version |
+|----------------------------|---------|
+| @ionic/app-scripts         | 3.1.8   |
+| Cordova Platform Android   | 7.0.0   |
+| Cordova Platform iOS       | 4.5.4   |
+| Ionic Framework Angular    | 3.9.2   |
+
+
+| Name                       | Version |
+| Android SDK Tools          | 26.1.1  |
+| ios-deploy                 | 1.9.2   | 
+| ios-sim                    | 5.0.11  | 
+| Node                       | 8.9.4   |
+| npm                        | 5.6.0   | 
 
 ## How to build
 
