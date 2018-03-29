@@ -30,7 +30,7 @@ Local packages
 
 | Name                       | Version |
 |----------------------------|---------|
-| @ionic/app-scripts         | 3.1.8   |
+| ionic/app-scripts          | 3.1.8   |
 | Cordova Platform Android   | 7.0.0   |
 | Cordova Platform iOS       | 4.5.4   |
 | Ionic Framework Angular    | 3.9.2   |
@@ -41,13 +41,6 @@ System
 
 | Name                       | Version |
 |----------------------------|---------|
-| @ionic/app-scripts         | 3.1.8   |
-| Cordova Platform Android   | 7.0.0   |
-| Cordova Platform iOS       | 4.5.4   |
-| Ionic Framework Angular    | 3.9.2   |
-
-
-| Name                       | Version |
 | Android SDK Tools          | 26.1.1  |
 | ios-deploy                 | 1.9.2   | 
 | ios-sim                    | 5.0.11  | 
@@ -60,7 +53,8 @@ Build app
 
 ```
 npm install
-npm run build
+ionic serve -c --no-open (http://localhost:8001);
+
 ```
 
 App will be built into `www` folder.
@@ -70,11 +64,29 @@ Replace platform with one of supported platforms: android, ios. In this example 
 
 ```
 cordova platform add android
-cordova plugin add cordova-plugin-mauron85-background-geolocation
+cordova platform add ios
 cordova build android
 ```
 
 There is *after_platform_add* hook in config.xml which runs script that install all required plugins.
+
+## Build for device
+
+### iOS
+You will need to install ios-deploy package.
+
+```
+npm -g install ios-deploy
+```
+
+```
+ionic cordova build ios
+```
+
+### Android
+```
+ionic cordova run android --device
+```
 
 ## Run on device
 
