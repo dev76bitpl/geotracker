@@ -10,7 +10,7 @@ import 'rxjs/add/operator/filter';
 export class ResourceTextProvider {
 
   public config = {
-    appversion: "0.96",
+    appversion: "0.97",
     intervalTime: 20000,
     intervalTimeInSec: 20000 / 1000,
     apiLinkProd: 'http://work.simplicityengine.net:8086/location',

@@ -15,15 +15,29 @@ export class HomePage {
   start() {
     console.log("start()");
     this.locationTracker.startTracking();
+    this.locationTracker.setInterval = setInterval(data => {
+      this.locationTracker.saveCoordsLogs(this.resource.jobStatus.work, this.locationTracker.lat, this.locationTracker.lng);
+      this.locationTracker.saveCoords(this.resource.jobStatus.work, this.locationTracker.lat, this.locationTracker.lng);
+    }, this.resource.config.intervalTime);
+
+    console.log("home lat: " + this.locationTracker.lat + "| home lng: " + this.locationTracker.lng);
   }
 
   break() {
     console.log("break()");
     this.locationTracker.breakTracking();
+    console.log("break() - saveCoordsLogs()");
+    this.locationTracker.saveCoordsLogs(this.resource.jobStatus.break, this.locationTracker.lat, this.locationTracker.lng);
+    console.log("break() - saveCoords()");
+    this.locationTracker.saveCoords(this.resource.jobStatus.break, this.locationTracker.lat, this.locationTracker.lng);
   }
 
   stop() {
     console.log("stop()");
     this.locationTracker.stopTracking();
+    console.log("stop() - saveCoordsLogs()");
+    this.locationTracker.saveCoordsLogs(this.resource.jobStatus.end, this.locationTracker.lat, this.locationTracker.lng);
+    console.log("stop() - saveCoords()");
+    this.locationTracker.saveCoords(this.resource.jobStatus.end, this.locationTracker.lat, this.locationTracker.lng);
   }
 }
